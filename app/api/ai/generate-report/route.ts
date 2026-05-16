@@ -3,9 +3,9 @@ import { z } from "zod";
 import { supportNoteSystemInstruction } from "@/lib/ai/instructions";
 import {
   AI_REVIEW_DISCLAIMER,
-  DEMO_AI_GENERATION_LIMIT,
   getAIWritingOption
 } from "@/lib/ai/options";
+import { getSubscriptionStatusForSession } from "@/lib/billing/subscription";
 import { ok } from "@/lib/http";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
@@ -19,20 +19,6 @@ const requestSchema = z.object({
 
 function demoActionPrefix(sessionId: string) {
   return `demo:${sessionId}:`;
-}
-
-async function getDemoUsageCount(sessionId: string) {
-  const supabase = getSupabaseAdmin();
-  const { count, error } = await supabase
-    .from("ai_generation_logs")
-    .select("id", { count: "exact", head: true })
-    .like("ai_action", `${demoActionPrefix(sessionId)}%`);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return count ?? 0;
 }
 
 function buildUserPrompt({
@@ -83,14 +69,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const usedBefore = await getDemoUsageCount(body.data.clientSessionId);
-    if (usedBefore >= DEMO_AI_GENERATION_LIMIT) {
+    const subscription = await getSubscriptionStatusForSession(body.data.clientSessionId);
+    const usedBefore = subscription.usage.aiGenerationsUsed;
+    const limit = subscription.limits.aiGenerations;
+
+    if (usedBefore >= limit) {
       return ok(
         {
-          error: "Free demo AI limit reached.",
+          error: `Your ${subscription.planName} AI generation limit has been reached. Upgrade your plan in Billing Settings.`,
           usage: {
             aiGenerationsUsed: usedBefore,
-            aiGenerationsLimit: DEMO_AI_GENERATION_LIMIT
+            aiGenerationsLimit: limit
           }
         },
         { status: 429 }
@@ -143,7 +132,7 @@ export async function POST(request: Request) {
       disclaimer: AI_REVIEW_DISCLAIMER,
       usage: {
         aiGenerationsUsed: usedAfter,
-        aiGenerationsLimit: DEMO_AI_GENERATION_LIMIT
+        aiGenerationsLimit: limit
       }
     });
   } catch (error) {

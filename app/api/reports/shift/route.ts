@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getSubscriptionStatusForSession, isLimitReached } from "@/lib/billing/subscription";
 import { getClientSessionId, missingSessionResponse } from "@/lib/reports/api";
 import {
   getShiftReportFlags,
@@ -23,6 +24,21 @@ export async function POST(request: Request) {
 
   const form = parsed.data;
   if (form.clientSessionId !== sessionId) return missingSessionResponse();
+
+  const subscription = await getSubscriptionStatusForSession(sessionId);
+  if (
+    isLimitReached({
+      used: subscription.usage.shiftReportsUsed,
+      limit: subscription.limits.shiftReports
+    })
+  ) {
+    return NextResponse.json(
+      {
+        error: `Your ${subscription.planName} shift report limit has been reached. Upgrade your plan in Billing Settings.`
+      },
+      { status: 402 }
+    );
+  }
 
   const flags = getShiftReportFlags(form);
   const finalReport =

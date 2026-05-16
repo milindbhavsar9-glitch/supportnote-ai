@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AlertTriangle, ClipboardCheck, Clock, FileText, Search, WalletCards } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SubscriptionStatusCard } from "@/components/billing/subscription-status-card";
 
 const cards = [
   { title: "Create Shift Report", href: "/reports/shift/new", icon: ClipboardCheck },
@@ -24,6 +25,7 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="mt-2 text-muted-foreground">Create reports, continue drafts, and review recent records.</p>
       </div>
+      <SubscriptionStatusCard />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {cards.map((card) => (
           <Link key={card.title} href={card.href}>
