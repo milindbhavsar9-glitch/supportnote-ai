@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Check, ClipboardCopy, FileText, Save, Send } from "lucide-react";
+import { AIWritingHelper } from "@/components/reports/ai-writing-helper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { incidentTypes, locationOptions } from "@/lib/config/report-options";
@@ -169,6 +170,11 @@ export function IncidentReportBuilder() {
     setMessage("Report copied successfully.");
   }
 
+  function applyAIText(text: string) {
+    update("aiReviewedText", text);
+    setMessage("AI reviewed text added. Review it, then save the draft.");
+  }
+
   useEffect(() => {
     const timer = window.setInterval(() => {
       void saveDraft({ quiet: true });
@@ -289,6 +295,7 @@ export function IncidentReportBuilder() {
             <CardHeader><CardTitle>Follow-up and confirmation</CardTitle></CardHeader>
             <CardContent className="grid gap-4">
               <Textarea label="Follow-up required" value={form.followUpRequired} onChange={(value) => update("followUpRequired", value)} />
+              <Textarea label="AI reviewed text" value={form.aiReviewedText} onChange={(value) => update("aiReviewedText", value)} />
               <div className="grid gap-4 md:grid-cols-2">
                 <Input label="Signature" value={form.signature} onChange={(value) => update("signature", value)} />
                 <Input label="Time completed" type="time" value={form.timeCompleted} onChange={(value) => update("timeCompleted", value)} />
@@ -298,19 +305,29 @@ export function IncidentReportBuilder() {
         </div>
 
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Final Incident Preview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <pre className={`max-h-[720px] overflow-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm leading-6 ${showPreview ? "" : "hidden lg:block"}`}>
-                {finalReport}
-              </pre>
-              <Button variant="outline" className="mt-4 w-full lg:hidden" onClick={() => setShowPreview((value) => !value)}>
-                {showPreview ? "Hide Preview" : "Show Preview"}
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <AIWritingHelper
+              reportType="incident"
+              sourceText={finalReport}
+              clientSessionId={form.clientSessionId}
+              reportId={reportId || undefined}
+              onApply={applyAIText}
+            />
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Final Incident Preview</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <pre className={`max-h-[720px] overflow-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm leading-6 ${showPreview ? "" : "hidden lg:block"}`}>
+                  {finalReport}
+                </pre>
+                <Button variant="outline" className="mt-4 w-full lg:hidden" onClick={() => setShowPreview((value) => !value)}>
+                  {showPreview ? "Hide Preview" : "Show Preview"}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 

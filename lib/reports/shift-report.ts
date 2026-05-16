@@ -51,6 +51,7 @@ export const shiftReportFormSchema = z.object({
   handoverNotes: z.string().optional().default(""),
   followUpOn: z.array(z.string()).optional().default([]),
   otherObservations: z.string().optional().default(""),
+  aiReviewedText: z.string().optional().default(""),
   confirmation: z.boolean().optional().default(false),
   signature: z.string().optional().default(""),
   timeCompleted: z.string().optional().default(""),
@@ -110,6 +111,7 @@ export const defaultShiftReportForm: ShiftReportForm = {
   handoverNotes: "",
   followUpOn: [],
   otherObservations: "",
+  aiReviewedText: "",
   confirmation: false,
   signature: "",
   timeCompleted: "",
@@ -206,6 +208,8 @@ Follow-up on: ${list(form.followUpOn)}
 12. Other Observations
 ${value(form.otherObservations)}
 
+AI reviewed text: ${value(form.aiReviewedText)}
+
 13. Follow-up Required
 ${list(form.followUpOn)}
 
@@ -234,4 +238,3 @@ export function getShiftReportFlags(form: ShiftReportForm) {
       form.supervisorNotified === "Yes" || form.medicationSupervisorNotified === "Yes"
   };
 }
-

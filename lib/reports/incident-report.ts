@@ -24,6 +24,7 @@ export const incidentReportFormSchema = z.object({
   participantLocationUnknown: z.string().optional().default(""),
   participantUnsupervised: z.string().optional().default(""),
   immediateSafetyActions: z.string().optional().default(""),
+  aiReviewedText: z.string().optional().default(""),
   signature: z.string().optional().default(""),
   timeCompleted: z.string().optional().default(""),
   clientSessionId: z.string().min(8)
@@ -55,6 +56,7 @@ export const defaultIncidentReportForm: IncidentReportForm = {
   participantLocationUnknown: "",
   participantUnsupervised: "",
   immediateSafetyActions: "",
+  aiReviewedText: "",
   signature: "",
   timeCompleted: "",
   clientSessionId: "pending"
@@ -131,6 +133,9 @@ Participant unsupervised: ${value(form.participantUnsupervised)}
 
 9. Follow-up Required
 ${value(form.followUpRequired)}
+
+10. AI Reviewed Text
+${value(form.aiReviewedText)}
 
 Report completed by: ${value(form.staffName)}
 Signature: ${value(form.signature)}

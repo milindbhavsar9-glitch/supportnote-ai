@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ClipboardCopy, FileText, Save, Send, ShieldAlert } from "lucide-react";
+import { AIWritingHelper } from "@/components/reports/ai-writing-helper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { incidentTypes, locationOptions, supportProvidedOptions } from "@/lib/config/report-options";
@@ -201,6 +202,11 @@ export function ShiftReportBuilder() {
   async function copyReport() {
     await navigator.clipboard.writeText(finalReport);
     setMessage("Report copied successfully.");
+  }
+
+  function applyAIText(text: string) {
+    update("aiReviewedText", text);
+    setMessage("AI reviewed text added. Review it, then save the draft.");
   }
 
   useEffect(() => {
@@ -403,6 +409,7 @@ export function ShiftReportBuilder() {
               <Textarea label="Handover notes" value={form.handoverNotes} onChange={(value) => update("handoverNotes", value)} />
               <MultiChoice title="Follow-up on" options={followUp} values={form.followUpOn} onToggle={(value) => toggleList("followUpOn", value)} />
               <Textarea label="Other observations" value={form.otherObservations} onChange={(value) => update("otherObservations", value)} />
+              <Textarea label="AI reviewed text" value={form.aiReviewedText} onChange={(value) => update("aiReviewedText", value)} />
               <label className="flex items-center gap-3 rounded-md border bg-white p-4 text-sm font-semibold">
                 <input type="checkbox" checked={form.confirmation} onChange={(event) => update("confirmation", event.target.checked)} className="h-5 w-5 accent-primary" />
                 I confirm this report is complete and accurate.
@@ -416,19 +423,29 @@ export function ShiftReportBuilder() {
         </div>
 
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Final Report Preview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <pre className={`max-h-[720px] overflow-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm leading-6 ${showPreview ? "" : "hidden lg:block"}`}>
-                {finalReport}
-              </pre>
-              <Button variant="outline" className="mt-4 w-full lg:hidden" onClick={() => setShowPreview((value) => !value)}>
-                {showPreview ? "Hide Preview" : "Show Preview"}
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <AIWritingHelper
+              reportType="shift"
+              sourceText={finalReport}
+              clientSessionId={form.clientSessionId}
+              reportId={reportId || undefined}
+              onApply={applyAIText}
+            />
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Final Report Preview</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <pre className={`max-h-[720px] overflow-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm leading-6 ${showPreview ? "" : "hidden lg:block"}`}>
+                  {finalReport}
+                </pre>
+                <Button variant="outline" className="mt-4 w-full lg:hidden" onClick={() => setShowPreview((value) => !value)}>
+                  {showPreview ? "Hide Preview" : "Show Preview"}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
