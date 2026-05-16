@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BarChart3, ClipboardCheck, FileText, Search, Settings, Users } from "lucide-react";
+import { DemoUserBadge } from "@/components/auth/demo-user-badge";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -41,9 +42,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <p className="hidden text-sm text-muted-foreground lg:block">
               Create factual support notes with simple forms and reviewable AI help.
             </p>
-            <Link href="/settings/billing" className="text-sm font-semibold text-primary">
-              Subscription
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/settings/billing" className="text-sm font-semibold text-primary">
+                Subscription
+              </Link>
+              <DemoUserBadge />
+            </div>
           </div>
         </header>
         <main className="px-4 py-6 sm:px-6 lg:px-8">{children}</main>
