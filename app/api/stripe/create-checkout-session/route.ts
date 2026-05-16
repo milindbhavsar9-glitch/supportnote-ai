@@ -10,7 +10,14 @@ const checkoutSchema = z.object({
 });
 
 function getAppUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL || "https://supportnote-ai.vercel.app";
+  const fallback = "https://supportnote-ai.vercel.app";
+  const value = process.env.NEXT_PUBLIC_APP_URL || fallback;
+
+  try {
+    return new URL(value).origin;
+  } catch {
+    return fallback;
+  }
 }
 
 export async function POST(request: Request) {
