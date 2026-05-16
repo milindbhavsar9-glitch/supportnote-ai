@@ -4,6 +4,7 @@ import {
   getShiftReportForSession,
   missingSessionResponse
 } from "@/lib/reports/api";
+import { addReportAuditLog } from "@/lib/reports/audit";
 import {
   getShiftReportFlags,
   shiftReportFormSchema
@@ -89,6 +90,16 @@ export async function PATCH(
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  const existingStatus = (existing.data as unknown as { status?: string }).status;
+  await addReportAuditLog({
+    reportId: id,
+    reportType: "shift",
+    action: "updated",
+    previousStatus: String(existingStatus || ""),
+    newStatus: data.status,
+    sessionId
+  });
 
   return NextResponse.json({ report: data });
 }

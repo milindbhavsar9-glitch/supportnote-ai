@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getClientSessionId, missingSessionResponse } from "@/lib/reports/api";
+import { addReportAuditLog } from "@/lib/reports/audit";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const reviewSchema = z.object({
@@ -34,12 +35,12 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
 
     if (error) throw new Error(error.message);
 
-    await supabase.from("report_audit_logs").insert({
-      report_id: id,
-      report_type: parsed.data.reportType,
+    await addReportAuditLog({
+      reportId: id,
+      reportType: parsed.data.reportType,
       action: "reviewed",
-      new_status: "reviewed",
-      metadata: { client_session_id: sessionId }
+      newStatus: "reviewed",
+      sessionId
     });
 
     return NextResponse.json({ report: data });

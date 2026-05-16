@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, ClipboardCopy, FileText, Save, Send, ShieldAlert } from "lucide-react";
+import { Check, ClipboardCopy, Download, FileText, Printer, Save, Send, ShieldAlert } from "lucide-react";
 import { AIWritingHelper } from "@/components/reports/ai-writing-helper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -202,6 +202,19 @@ export function ShiftReportBuilder() {
   async function copyReport() {
     await navigator.clipboard.writeText(finalReport);
     setMessage("Report copied successfully.");
+  }
+
+  function downloadPdf() {
+    if (!reportId) {
+      setMessage("Save the report before downloading PDF.");
+      return;
+    }
+
+    window.open(`/api/reports/shift/${reportId}/pdf?session=${encodeURIComponent(form.clientSessionId)}`, "_blank");
+  }
+
+  function printReport() {
+    window.print();
   }
 
   function applyAIText(text: string) {
@@ -450,10 +463,12 @@ export function ShiftReportBuilder() {
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white p-3 lg:left-64">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-2 md:grid-cols-5">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-2 md:grid-cols-7">
           <Button variant="outline" onClick={() => void saveDraft()}><Save className="h-4 w-4" /> Save Draft</Button>
           <Button variant="secondary" onClick={() => void copyReport()}><ClipboardCopy className="h-4 w-4" /> Copy</Button>
           <Button variant="outline" onClick={() => setShowPreview((value) => !value)}><FileText className="h-4 w-4" /> Preview</Button>
+          <Button variant="outline" onClick={downloadPdf}><Download className="h-4 w-4" /> PDF</Button>
+          <Button variant="outline" onClick={printReport}><Printer className="h-4 w-4" /> Print</Button>
           <Button onClick={() => void changeStatus("submit")}><Send className="h-4 w-4" /> Submit</Button>
           <Button variant="accent" onClick={() => void changeStatus("complete")}><Check className="h-4 w-4" /> Complete</Button>
         </div>

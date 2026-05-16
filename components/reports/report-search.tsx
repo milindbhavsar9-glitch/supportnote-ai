@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Search } from "lucide-react";
+import { AlertTriangle, Download, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDemoSessionId } from "@/lib/reports/demo-session";
@@ -179,6 +179,7 @@ export function ReportSearch() {
                     <th>Status</th>
                     <th>Flags</th>
                     <th>Updated</th>
+                    <th>PDF</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -201,6 +202,14 @@ export function ReportSearch() {
                         </div>
                       </td>
                       <td>{new Date(report.updated_at).toLocaleString()}</td>
+                      <td>
+                        <Button asChild variant="outline" size="sm">
+                          <a href={`/api/reports/${report.report_type}/${report.id}/pdf?session=${encodeURIComponent(sessionId)}`} target="_blank" rel="noreferrer">
+                            <Download className="h-4 w-4" />
+                            PDF
+                          </a>
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

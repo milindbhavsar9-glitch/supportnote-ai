@@ -4,6 +4,7 @@ import {
   getShiftReportForSession,
   missingSessionResponse
 } from "@/lib/reports/api";
+import { addReportAuditLog } from "@/lib/reports/audit";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(
@@ -35,6 +36,15 @@ export async function POST(
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await addReportAuditLog({
+    reportId: id,
+    reportType: "shift",
+    action: "completed",
+    previousStatus: String((existing.data as { status?: string }).status || ""),
+    newStatus: data.status,
+    sessionId
+  });
 
   return NextResponse.json({ report: data });
 }

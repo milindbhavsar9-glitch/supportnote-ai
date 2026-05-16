@@ -4,6 +4,7 @@ import {
   getIncidentReportForSession,
   missingSessionResponse
 } from "@/lib/reports/api";
+import { addReportAuditLog } from "@/lib/reports/audit";
 import {
   getIncidentReportFlags,
   incidentReportFormSchema
@@ -82,6 +83,16 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  const existingStatus = (existing.data as unknown as { status?: string }).status;
+  await addReportAuditLog({
+    reportId: id,
+    reportType: "incident",
+    action: "updated",
+    previousStatus: String(existingStatus || ""),
+    newStatus: data.status,
+    sessionId
+  });
 
   return NextResponse.json({ report: data });
 }

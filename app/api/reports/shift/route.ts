@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSubscriptionStatusForSession, isLimitReached } from "@/lib/billing/subscription";
+import { addReportAuditLog } from "@/lib/reports/audit";
 import { getClientSessionId, missingSessionResponse } from "@/lib/reports/api";
 import {
   getShiftReportFlags,
@@ -74,6 +75,14 @@ export async function POST(request: Request) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    await addReportAuditLog({
+      reportId: data.id,
+      reportType: "shift",
+      action: "created",
+      newStatus: data.status,
+      sessionId
+    });
 
     return NextResponse.json({ report: data });
   } catch (error) {
