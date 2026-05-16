@@ -38,11 +38,47 @@ export function getReportSelect() {
   `;
 }
 
+export function getIncidentReportSelect() {
+  return `
+    id,
+    participant_name,
+    staff_name,
+    incident_date,
+    incident_time,
+    location,
+    incident_type,
+    status,
+    supervisor_notified,
+    family_guardian_notified,
+    emergency_services_contacted,
+    injury_flag,
+    line_of_sight_issue_flag,
+    form_data,
+    final_report,
+    signature,
+    time_completed,
+    submitted_at,
+    completed_at,
+    created_at,
+    updated_at
+  `;
+}
+
 export async function getShiftReportForSession(id: string, sessionId: string) {
   const supabase = getSupabaseAdmin();
   return supabase
     .from("shift_reports")
     .select(getReportSelect())
+    .eq("id", id)
+    .contains("form_data", { client_session_id: sessionId })
+    .single();
+}
+
+export async function getIncidentReportForSession(id: string, sessionId: string) {
+  const supabase = getSupabaseAdmin();
+  return supabase
+    .from("incident_reports")
+    .select(getIncidentReportSelect())
     .eq("id", id)
     .contains("form_data", { client_session_id: sessionId })
     .single();

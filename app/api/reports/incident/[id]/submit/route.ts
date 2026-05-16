@@ -1,5 +1,42 @@
-import { notImplemented } from "@/lib/http";
+import { NextResponse } from "next/server";
+import {
+  getClientSessionId,
+  getIncidentReportForSession,
+  missingSessionResponse
+} from "@/lib/reports/api";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 
-export async function POST() {
-  return notImplemented("Submit incident report and apply 24-hour rule");
+export async function POST(
+  request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const sessionId = getClientSessionId(request);
+  if (!sessionId) return missingSessionResponse();
+
+  const { id } = await context.params;
+  const existing = await getIncidentReportForSession(id, sessionId);
+  if (existing.error || !existing.data) {
+    return NextResponse.json({ error: "Incident report not found." }, { status: 404 });
+  }
+
+  const existingReport = existing.data as unknown as { created_at: string };
+  const createdAt = new Date(existingReport.created_at);
+  const isLate = Date.now() - createdAt.getTime() > 24 * 60 * 60 * 1000;
+  const nextStatus = isLate ? "late" : "submitted";
+
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("incident_reports")
+    .update({
+      status: nextStatus,
+      submitted_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", id)
+    .select("id, status")
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ report: data });
 }

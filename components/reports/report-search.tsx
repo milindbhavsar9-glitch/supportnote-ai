@@ -9,6 +9,7 @@ import { getDemoSessionId } from "@/lib/reports/demo-session";
 
 type SavedShiftReport = {
   id: string;
+  report_type: "shift" | "incident";
   participant_name: string;
   staff_name: string;
   report_date: string;
@@ -26,6 +27,7 @@ export function ReportSearch() {
   const [participant, setParticipant] = useState("");
   const [staff, setStaff] = useState("");
   const [status, setStatus] = useState("");
+  const [reportType, setReportType] = useState("");
   const [incidentOnly, setIncidentOnly] = useState(false);
   const [medicationOnly, setMedicationOnly] = useState(false);
   const [lineOfSightOnly, setLineOfSightOnly] = useState(false);
@@ -46,6 +48,7 @@ export function ReportSearch() {
     if (participant) params.set("participant", participant);
     if (staff) params.set("staff", staff);
     if (status) params.set("status", status);
+    if (reportType) params.set("report_type", reportType);
     if (incidentOnly) params.set("incident", "true");
     if (medicationOnly) params.set("medication", "true");
     if (lineOfSightOnly) params.set("line_of_sight", "true");
@@ -108,6 +111,15 @@ export function ReportSearch() {
               placeholder="Staff"
             />
             <select
+              value={reportType}
+              onChange={(event) => setReportType(event.target.value)}
+              className="h-11 rounded-md border px-3"
+            >
+              <option value="">Any report type</option>
+              <option value="shift">Shift</option>
+              <option value="incident">Incident</option>
+            </select>
+            <select
               value={status}
               onChange={(event) => setStatus(event.target.value)}
               className="h-11 rounded-md border px-3"
@@ -161,6 +173,7 @@ export function ReportSearch() {
                 <thead className="text-muted-foreground">
                   <tr>
                     <th className="py-2">Participant</th>
+                    <th>Type</th>
                     <th>Staff</th>
                     <th>Date</th>
                     <th>Status</th>
@@ -172,6 +185,7 @@ export function ReportSearch() {
                   {reports.map((report) => (
                     <tr key={report.id} className="border-t">
                       <td className="py-3 font-semibold">{report.participant_name}</td>
+                      <td className="capitalize">{report.report_type}</td>
                       <td>{report.staff_name}</td>
                       <td>{report.report_date}</td>
                       <td className="capitalize">{report.status}</td>
