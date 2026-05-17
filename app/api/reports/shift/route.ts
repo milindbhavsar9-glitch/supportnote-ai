@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getRequestContext } from "@/lib/auth/request-context";
 import { getSubscriptionStatusForSession, isLimitReached } from "@/lib/billing/subscription";
+import { hasCurrentLegalAcceptance } from "@/lib/legal/policies";
 import { addReportAuditLog } from "@/lib/reports/audit";
 import { missingSessionResponse } from "@/lib/reports/api";
 import {
@@ -13,6 +14,16 @@ export async function POST(request: Request) {
   const context = await getRequestContext(request);
   if (!context) return missingSessionResponse();
   const sessionId = context.mode === "demo" ? context.sessionId : context.profile.id;
+
+  if (context.mode === "auth" && !(await hasCurrentLegalAcceptance(context.profile.id))) {
+    return NextResponse.json(
+      {
+        error:
+          "You must accept the current Terms, Privacy Policy, Data Handling Notice, and AI Disclaimer before creating reports."
+      },
+      { status: 428 }
+    );
+  }
 
   const body = (await request.json()) as unknown;
   const parsed = shiftReportFormSchema.safeParse(

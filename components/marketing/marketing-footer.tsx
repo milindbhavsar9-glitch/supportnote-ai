@@ -21,6 +21,8 @@ export function MarketingFooter() {
           <p className="font-semibold text-foreground">Legal</p>
           <Link href="/privacy" className="block">Privacy Policy</Link>
           <Link href="/terms" className="block">Terms of Service</Link>
+          <Link href="/data-handling-notice" className="block">Data Handling Notice</Link>
+          <Link href="/ai-usage-disclaimer" className="block">AI Usage Disclaimer</Link>
         </div>
       </div>
     </footer>

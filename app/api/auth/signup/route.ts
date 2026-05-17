@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { bootstrapUserProfile } from "@/lib/auth/profile";
+import { recordLegalAcceptance } from "@/lib/legal/policies";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 const signupSchema = z.object({
@@ -8,7 +9,10 @@ const signupSchema = z.object({
   email: z.string().email("Enter a valid email."),
   password: z.string().min(6, "Password must be at least 6 characters."),
   accountType: z.enum(["solo", "team"]),
-  companyName: z.string().optional().default("")
+  companyName: z.string().optional().default(""),
+  legalAccepted: z.boolean().refine(Boolean, {
+    message: "You must agree to the Terms, Privacy Policy, Data Handling Notice, and AI Disclaimer before creating an account."
+  })
 });
 
 export async function POST(request: Request) {
@@ -44,6 +48,15 @@ export async function POST(request: Request) {
     fullName: parsed.data.fullName,
     accountType: parsed.data.accountType,
     companyName: parsed.data.companyName
+  });
+
+  await recordLegalAcceptance({
+    userId: data.user.id,
+    ipAddress:
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      null,
+    userAgent: request.headers.get("user-agent")
   });
 
   return NextResponse.json({

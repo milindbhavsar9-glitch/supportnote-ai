@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -73,8 +74,18 @@ export function SignupForm() {
   const router = useRouter();
   const [status, setStatus] = useState<Status>({ type: "idle", message: "" });
   const [accountType, setAccountType] = useState("solo");
+  const [legalAccepted, setLegalAccepted] = useState(false);
 
   async function submit(formData: FormData) {
+    if (!legalAccepted) {
+      setStatus({
+        type: "error",
+        message:
+          "You must agree to the Terms, Privacy Policy, Data Handling Notice, and AI Disclaimer before creating an account."
+      });
+      return;
+    }
+
     setStatus({ type: "loading", message: "Creating account..." });
     try {
       const result = await postJson("/api/auth/signup", {
@@ -82,7 +93,8 @@ export function SignupForm() {
         email: String(formData.get("email") || ""),
         password: String(formData.get("password") || ""),
         accountType,
-        companyName: String(formData.get("companyName") || "")
+        companyName: String(formData.get("companyName") || ""),
+        legalAccepted
       });
 
       if (result.needsEmailConfirmation) {
@@ -135,8 +147,43 @@ export function SignupForm() {
       {accountType === "team" ? (
         <input className="h-11 w-full rounded-md border px-3" name="companyName" placeholder="Company or team name" />
       ) : null}
+      <div className="rounded-md border bg-muted/30 p-4 text-sm">
+        <label className="flex items-start gap-3">
+          <input
+            checked={legalAccepted}
+            className="mt-1 h-5 w-5"
+            onChange={(event) => setLegalAccepted(event.target.checked)}
+            type="checkbox"
+          />
+          <span className="leading-6 text-muted-foreground">
+            I have read and agree to the{" "}
+            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/terms" target="_blank">
+              Terms of Service
+            </Link>
+            ,{" "}
+            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/privacy" target="_blank">
+              Privacy Policy
+            </Link>
+            ,{" "}
+            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/data-handling-notice" target="_blank">
+              Data Handling Notice
+            </Link>
+            , and{" "}
+            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/ai-usage-disclaimer" target="_blank">
+              AI Usage Disclaimer
+            </Link>
+            . I understand that SupportNote AI helps prepare documentation but does not replace my organisation&apos;s policies,
+            supervisor review, clinical judgement, or NDIS reporting obligations. I am responsible for reviewing all AI-generated
+            text before saving, copying, exporting, or submitting any report.
+          </span>
+        </label>
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          Please do not enter unnecessary personal or sensitive information. Only record information required for your support work
+          and follow your organisation&apos;s privacy and reporting policies.
+        </p>
+      </div>
       <StatusMessage status={status} />
-      <Button className="w-full" disabled={status.type === "loading"} type="submit">
+      <Button className="w-full" disabled={status.type === "loading" || !legalAccepted} type="submit">
         {status.type === "loading" ? "Creating account..." : "Create account"}
       </Button>
     </form>

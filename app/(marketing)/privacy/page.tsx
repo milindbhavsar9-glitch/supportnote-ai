@@ -4,17 +4,45 @@ export default function PrivacyPage() {
       <h1 className="text-4xl font-bold tracking-tight">Privacy Policy</h1>
       <div className="mt-6 space-y-5 text-muted-foreground">
         <p>
-          SupportNote AI is designed for sensitive support documentation. Version 1
-          minimises participant information, requires login for report access, and
-          keeps billing and AI secrets server-side.
+          SupportNote AI collects account information such as name, email, role,
+          company or team details, subscription status, and basic security records
+          such as legal acceptance timestamps.
         </p>
         <p>
-          Users are responsible for ensuring their organisation permits use of this
-          tool and for reviewing all AI-generated text before saving or submitting.
+          Users may enter support and report information such as participant display
+          names, staff names, shift notes, incident details, medication flags,
+          behaviour flags, line-of-sight concerns, signatures, and review comments.
+          Users should only enter information they are authorised and required to
+          record for their support work.
         </p>
         <p>
-          A full legal privacy policy should be reviewed by an Australian privacy
-          professional before production launch.
+          Information is collected to create, store, search, review, copy, export,
+          and manage shift reports and incident reports. Reports are stored in
+          Supabase/PostgreSQL with tenant and role-based access controls.
+        </p>
+        <p>
+          Access depends on account role. Solo users and support workers should only
+          access their own reports. Team leaders and company admins may access team
+          reports where their company has permission to do so.
+        </p>
+        <p>
+          AI may be used to draft, shorten, reword, or correct report text. AI output
+          is a drafting aid only and must be reviewed before saving or submitting.
+          API keys are kept server-side.
+        </p>
+        <p>
+          Billing information is handled through Stripe. SupportNote AI stores
+          subscription status and billing event references, while card/payment details
+          are handled by Stripe.
+        </p>
+        <p>
+          Users can request account deletion or data export through account settings
+          or by contacting privacy@supportnote.ai. Some records may need to be
+          retained according to legal, audit, billing, or organisational obligations.
+        </p>
+        <p>
+          This privacy policy is a working launch draft. The app owner should ask an
+          Australian privacy/legal professional to review it before public launch.
         </p>
       </div>
     </main>

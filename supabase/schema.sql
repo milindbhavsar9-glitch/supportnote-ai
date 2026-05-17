@@ -6,6 +6,16 @@ create type report_status as enum ('draft', 'submitted', 'completed', 'reviewed'
 create type report_type as enum ('shift', 'incident', 'general');
 create type plan_id as enum ('free_trial', 'solo_worker', 'small_team');
 
+create table public.legal_policy_versions (
+  id uuid primary key default gen_random_uuid(),
+  policy_type text not null,
+  version text not null,
+  effective_date date not null,
+  content text,
+  created_at timestamptz default now(),
+  unique (policy_type, version)
+);
+
 create table public.companies (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -197,6 +207,30 @@ create table public.billing_events (
   created_at timestamptz default now()
 );
 
+create table public.user_legal_acceptances (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.users(id) on delete cascade,
+  accepted_terms_at timestamptz not null,
+  accepted_privacy_at timestamptz not null,
+  accepted_data_handling_at timestamptz not null,
+  accepted_ai_disclaimer_at timestamptz not null,
+  accepted_terms_version text not null,
+  accepted_privacy_version text not null,
+  accepted_data_handling_version text not null,
+  accepted_ai_disclaimer_version text not null,
+  ip_address text,
+  user_agent text,
+  created_at timestamptz default now()
+);
+
+insert into public.legal_policy_versions (policy_type, version, effective_date, content)
+values
+  ('terms', '2026-05-17', '2026-05-17', 'Initial Terms of Service placeholder. Obtain Australian legal review before launch.'),
+  ('privacy', '2026-05-17', '2026-05-17', 'Initial Privacy Policy placeholder. Obtain Australian privacy/legal review before launch.'),
+  ('data_handling', '2026-05-17', '2026-05-17', 'Initial Data Handling Notice placeholder.'),
+  ('ai_disclaimer', '2026-05-17', '2026-05-17', 'Initial AI Usage Disclaimer placeholder.')
+on conflict (policy_type, version) do nothing;
+
 create index shift_reports_user_idx on public.shift_reports(user_id);
 create index shift_reports_company_idx on public.shift_reports(company_id);
 create index shift_reports_flags_idx on public.shift_reports(status, incident_flag, medication_issue_flag, line_of_sight_issue_flag);
@@ -216,6 +250,8 @@ alter table public.subscriptions enable row level security;
 alter table public.usage_limits enable row level security;
 alter table public.ai_generation_logs enable row level security;
 alter table public.billing_events enable row level security;
+alter table public.legal_policy_versions enable row level security;
+alter table public.user_legal_acceptances enable row level security;
 
 create or replace function public.is_company_member(target_company_id uuid)
 returns boolean
@@ -318,3 +354,9 @@ create policy "Users can read own AI logs" on public.ai_generation_logs
   for select using (
     user_id = auth.uid() or public.has_company_role(company_id, array['company_admin']::app_role[])
   );
+
+create policy "Anyone authenticated can read legal policy versions" on public.legal_policy_versions
+  for select using (auth.uid() is not null);
+
+create policy "Users can read own legal acceptances" on public.user_legal_acceptances
+  for select using (user_id = auth.uid());

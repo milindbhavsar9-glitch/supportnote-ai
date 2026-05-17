@@ -9,12 +9,25 @@ export default function TermsPage() {
           reporting obligations.
         </p>
         <p>
-          Users are responsible for reviewing all AI-generated text before saving
-          or submitting reports.
+          Users are responsible for the accuracy, completeness, and appropriateness
+          of all reports they create, copy, export, save, or submit. AI-generated
+          text must be reviewed and edited before use.
         </p>
         <p>
-          Final terms should be reviewed by a qualified legal professional before
-          production use.
+          You must only use the service for support documentation you are authorised
+          to prepare. You must not use SupportNote AI to hide, minimise, alter, or
+          misrepresent incident facts.
+        </p>
+        <p>
+          Subscription billing, plan changes, cancellations, failed payments, and
+          customer portal access are handled through Stripe. Your organisation is
+          responsible for ensuring the chosen plan is appropriate for its staff and
+          reporting needs.
+        </p>
+        <p>
+          These terms are a working launch draft. The app owner should ask an
+          Australian lawyer to review the Terms of Service, Privacy Policy, and
+          subscription wording before public launch.
         </p>
       </div>
     </main>
