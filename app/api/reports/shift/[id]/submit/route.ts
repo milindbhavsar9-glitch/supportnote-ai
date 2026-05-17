@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
+import { getRequestContext } from "@/lib/auth/request-context";
 import {
-  getClientSessionId,
-  getShiftReportForSession,
+  getShiftReportForContext,
   missingSessionResponse
 } from "@/lib/reports/api";
 import { addReportAuditLog } from "@/lib/reports/audit";
@@ -11,11 +11,12 @@ export async function POST(
   request: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const sessionId = getClientSessionId(request);
-  if (!sessionId) return missingSessionResponse();
+  const requestContext = await getRequestContext(request);
+  if (!requestContext) return missingSessionResponse();
+  const sessionId = requestContext.mode === "demo" ? requestContext.sessionId : requestContext.profile.id;
 
   const { id } = await context.params;
-  const existing = await getShiftReportForSession(id, sessionId);
+  const existing = await getShiftReportForContext(id, requestContext);
 
   if (existing.error || !existing.data) {
     return NextResponse.json({ error: "Report not found." }, { status: 404 });

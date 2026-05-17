@@ -1,0 +1,15 @@
+import { ResetPasswordForm } from "@/components/auth/auth-forms";
+
+export default function ResetPasswordPage() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-muted/40 px-4 py-10">
+      <div className="w-full max-w-md rounded-lg border bg-white p-6 shadow-sm">
+        <h1 className="text-2xl font-bold">Choose a new password</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Enter a new password after opening the reset link from your email.
+        </p>
+        <ResetPasswordForm />
+      </div>
+    </main>
+  );
+}

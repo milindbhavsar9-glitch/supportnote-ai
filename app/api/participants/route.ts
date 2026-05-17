@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { getRequestContext } from "@/lib/auth/request-context";
+import { canOpenAdmin } from "@/lib/auth/roles";
 import { demoReference } from "@/lib/admin/demo-admin";
-import { getClientSessionId, missingSessionResponse } from "@/lib/reports/api";
+import { missingSessionResponse } from "@/lib/reports/api";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const participantSchema = z.object({
@@ -11,16 +13,19 @@ const participantSchema = z.object({
 });
 
 export async function GET(request: Request) {
-  const sessionId = getClientSessionId(request);
-  if (!sessionId) return missingSessionResponse();
+  const context = await getRequestContext(request);
+  if (!context) return missingSessionResponse();
 
   try {
     const supabase = getSupabaseAdmin();
-    const { data, error } = await supabase
+    const query = supabase
       .from("participants")
       .select("id, display_name, reference_code, notes, is_active, created_at")
-      .eq("reference_code", demoReference("participant", sessionId))
       .order("created_at", { ascending: false });
+    const { data, error } =
+      context.mode === "auth" && context.profile.company_id
+        ? await query.eq("company_id", context.profile.company_id)
+        : await query.eq("reference_code", demoReference("participant", context.sessionId));
 
     if (error) throw new Error(error.message);
     return NextResponse.json({ participants: data ?? [] });
@@ -33,8 +38,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const sessionId = getClientSessionId(request);
-  if (!sessionId) return missingSessionResponse();
+  const context = await getRequestContext(request);
+  if (!context) return missingSessionResponse();
 
   const parsed = participantSchema.safeParse(await request.json());
   if (!parsed.success) {
@@ -42,12 +47,21 @@ export async function POST(request: Request) {
   }
 
   try {
+    if (context.mode === "auth" && !canOpenAdmin(context.profile.role)) {
+      return NextResponse.json({ error: "Only team leaders and company admins can manage participants." }, { status: 403 });
+    }
+
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from("participants")
       .insert({
+        company_id: context.mode === "auth" ? context.profile.company_id : null,
+        created_by: context.mode === "auth" ? context.profile.id : null,
         display_name: parsed.data.displayName,
-        reference_code: demoReference("participant", sessionId),
+        reference_code:
+          context.mode === "auth"
+            ? parsed.data.referenceCode || null
+            : demoReference("participant", context.sessionId),
         notes: JSON.stringify({
           demo_record_type: "participant",
           reference_code: parsed.data.referenceCode,

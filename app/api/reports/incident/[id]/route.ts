@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
+import { getRequestContext } from "@/lib/auth/request-context";
 import {
-  getClientSessionId,
-  getIncidentReportForSession,
+  getIncidentReportForContext,
   missingSessionResponse
 } from "@/lib/reports/api";
 import { addReportAuditLog } from "@/lib/reports/audit";
@@ -15,11 +15,11 @@ export async function GET(
   request: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const sessionId = getClientSessionId(request);
-  if (!sessionId) return missingSessionResponse();
+  const requestContext = await getRequestContext(request);
+  if (!requestContext) return missingSessionResponse();
 
   const { id } = await context.params;
-  const { data, error } = await getIncidentReportForSession(id, sessionId);
+  const { data, error } = await getIncidentReportForContext(id, requestContext);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 404 });
 
@@ -30,8 +30,9 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const sessionId = getClientSessionId(request);
-  if (!sessionId) return missingSessionResponse();
+  const requestContext = await getRequestContext(request);
+  if (!requestContext) return missingSessionResponse();
+  const sessionId = requestContext.mode === "demo" ? requestContext.sessionId : requestContext.profile.id;
 
   const body = (await request.json()) as unknown;
   const parsed = incidentReportFormSchema.safeParse(
@@ -45,10 +46,10 @@ export async function PATCH(
   }
 
   const form = parsed.data;
-  if (form.clientSessionId !== sessionId) return missingSessionResponse();
+  if (requestContext.mode === "demo" && form.clientSessionId !== sessionId) return missingSessionResponse();
 
   const { id } = await context.params;
-  const existing = await getIncidentReportForSession(id, sessionId);
+  const existing = await getIncidentReportForContext(id, requestContext);
   if (existing.error) return NextResponse.json({ error: existing.error.message }, { status: 404 });
 
   const flags = getIncidentReportFlags(form);
@@ -72,7 +73,7 @@ export async function PATCH(
       emergency_services_contacted: flags.emergencyServicesContacted,
       injury_flag: flags.injuryFlag,
       line_of_sight_issue_flag: flags.lineOfSightIssueFlag,
-      form_data: { ...form, client_session_id: sessionId },
+      form_data: { ...form, client_session_id: sessionId, auth_mode: requestContext.mode },
       final_report: finalReport,
       signature: form.signature || null,
       time_completed: form.timeCompleted ? new Date().toISOString() : null,

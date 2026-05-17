@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { RequestContext } from "@/lib/auth/request-context";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export function getClientSessionId(request: Request) {
@@ -7,7 +8,7 @@ export function getClientSessionId(request: Request) {
 
 export function missingSessionResponse() {
   return NextResponse.json(
-    { error: "Missing demo session. Refresh the page and try again." },
+    { error: "Log in or start a demo session, then try again." },
     { status: 400 }
   );
 }
@@ -82,4 +83,51 @@ export async function getIncidentReportForSession(id: string, sessionId: string)
     .eq("id", id)
     .contains("form_data", { client_session_id: sessionId })
     .single();
+}
+
+type ScopeableQuery<T> = {
+  contains: (column: string, value: Record<string, unknown>) => T;
+  eq: (column: string, value: string) => T;
+};
+
+export function applyShiftReportScope<T extends ScopeableQuery<T>>(query: T, context: RequestContext): T {
+  if (context.mode === "demo") {
+    return query.contains("form_data", { client_session_id: context.sessionId });
+  }
+
+  if (
+    context.profile.company_id &&
+    (context.profile.role === "team_leader" || context.profile.role === "company_admin")
+  ) {
+    return query.eq("company_id", context.profile.company_id);
+  }
+
+  return query.eq("user_id", context.profile.id);
+}
+
+export function applyIncidentReportScope<T extends ScopeableQuery<T>>(query: T, context: RequestContext): T {
+  if (context.mode === "demo") {
+    return query.contains("form_data", { client_session_id: context.sessionId });
+  }
+
+  if (
+    context.profile.company_id &&
+    (context.profile.role === "team_leader" || context.profile.role === "company_admin")
+  ) {
+    return query.eq("company_id", context.profile.company_id);
+  }
+
+  return query.eq("user_id", context.profile.id);
+}
+
+export async function getShiftReportForContext(id: string, context: RequestContext) {
+  const supabase = getSupabaseAdmin();
+  const query = supabase.from("shift_reports").select(getReportSelect()).eq("id", id);
+  return applyShiftReportScope(query, context).single();
+}
+
+export async function getIncidentReportForContext(id: string, context: RequestContext) {
+  const supabase = getSupabaseAdmin();
+  const query = supabase.from("incident_reports").select(getIncidentReportSelect()).eq("id", id);
+  return applyIncidentReportScope(query, context).single();
 }

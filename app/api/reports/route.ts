@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import { getRequestContext } from "@/lib/auth/request-context";
 import {
-  getClientSessionId,
   getIncidentReportSelect,
   getReportSelect,
   missingSessionResponse
@@ -8,8 +8,8 @@ import {
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
-  const sessionId = getClientSessionId(request);
-  if (!sessionId) return missingSessionResponse();
+  const requestContext = await getRequestContext(request);
+  if (!requestContext) return missingSessionResponse();
 
   const { searchParams } = new URL(request.url);
   const participant = searchParams.get("participant")?.trim();
@@ -24,12 +24,18 @@ export async function GET(request: Request) {
   const searches: PromiseLike<{ data: unknown[] | null; error: { message: string } | null }>[] = [];
 
   if (!reportType || reportType === "shift") {
-    let shiftQuery = supabase
-      .from("shift_reports")
-      .select(getReportSelect())
-      .contains("form_data", { client_session_id: sessionId })
-      .order("updated_at", { ascending: false })
-      .limit(50);
+    let shiftQuery = supabase.from("shift_reports").select(getReportSelect());
+    if (requestContext.mode === "demo") {
+      shiftQuery = shiftQuery.contains("form_data", { client_session_id: requestContext.sessionId });
+    } else if (
+      requestContext.profile.company_id &&
+      (requestContext.profile.role === "team_leader" || requestContext.profile.role === "company_admin")
+    ) {
+      shiftQuery = shiftQuery.eq("company_id", requestContext.profile.company_id);
+    } else {
+      shiftQuery = shiftQuery.eq("user_id", requestContext.profile.id);
+    }
+    shiftQuery = shiftQuery.order("updated_at", { ascending: false }).limit(50);
 
     if (participant) shiftQuery = shiftQuery.ilike("participant_name", `%${participant}%`);
     if (staff) shiftQuery = shiftQuery.ilike("staff_name", `%${staff}%`);
@@ -45,12 +51,18 @@ export async function GET(request: Request) {
   }
 
   if (!reportType || reportType === "incident") {
-    let incidentQuery = supabase
-      .from("incident_reports")
-      .select(getIncidentReportSelect())
-      .contains("form_data", { client_session_id: sessionId })
-      .order("updated_at", { ascending: false })
-      .limit(50);
+    let incidentQuery = supabase.from("incident_reports").select(getIncidentReportSelect());
+    if (requestContext.mode === "demo") {
+      incidentQuery = incidentQuery.contains("form_data", { client_session_id: requestContext.sessionId });
+    } else if (
+      requestContext.profile.company_id &&
+      (requestContext.profile.role === "team_leader" || requestContext.profile.role === "company_admin")
+    ) {
+      incidentQuery = incidentQuery.eq("company_id", requestContext.profile.company_id);
+    } else {
+      incidentQuery = incidentQuery.eq("user_id", requestContext.profile.id);
+    }
+    incidentQuery = incidentQuery.order("updated_at", { ascending: false }).limit(50);
 
     if (participant) incidentQuery = incidentQuery.ilike("participant_name", `%${participant}%`);
     if (staff) incidentQuery = incidentQuery.ilike("staff_name", `%${staff}%`);

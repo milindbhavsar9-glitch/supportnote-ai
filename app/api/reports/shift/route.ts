@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { getRequestContext } from "@/lib/auth/request-context";
 import { getSubscriptionStatusForSession, isLimitReached } from "@/lib/billing/subscription";
 import { addReportAuditLog } from "@/lib/reports/audit";
-import { getClientSessionId, missingSessionResponse } from "@/lib/reports/api";
+import { missingSessionResponse } from "@/lib/reports/api";
 import {
   getShiftReportFlags,
   shiftReportFormSchema
@@ -9,8 +10,9 @@ import {
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
-  const sessionId = getClientSessionId(request);
-  if (!sessionId) return missingSessionResponse();
+  const context = await getRequestContext(request);
+  if (!context) return missingSessionResponse();
+  const sessionId = context.mode === "demo" ? context.sessionId : context.profile.id;
 
   const body = (await request.json()) as unknown;
   const parsed = shiftReportFormSchema.safeParse(
@@ -24,7 +26,7 @@ export async function POST(request: Request) {
   }
 
   const form = parsed.data;
-  if (form.clientSessionId !== sessionId) return missingSessionResponse();
+  if (context.mode === "demo" && form.clientSessionId !== sessionId) return missingSessionResponse();
 
   const subscription = await getSubscriptionStatusForSession(sessionId);
   if (
@@ -52,6 +54,8 @@ export async function POST(request: Request) {
     const { data, error } = await supabase
       .from("shift_reports")
       .insert({
+        user_id: context.mode === "auth" ? context.profile.id : null,
+        company_id: context.mode === "auth" ? context.profile.company_id : null,
         participant_name: form.participantName,
         staff_name: form.staffName,
         report_date: form.reportDate,
@@ -64,7 +68,7 @@ export async function POST(request: Request) {
         behaviour_issue_flag: flags.behaviourIssueFlag,
         line_of_sight_issue_flag: flags.lineOfSightIssueFlag,
         supervisor_notified: flags.supervisorNotified,
-        form_data: { ...form, client_session_id: sessionId },
+        form_data: { ...form, client_session_id: sessionId, auth_mode: context.mode },
         final_report: finalReport,
         signature: form.signature || null,
         time_completed: form.timeCompleted ? new Date().toISOString() : null

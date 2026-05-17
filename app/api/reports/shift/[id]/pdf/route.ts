@@ -1,17 +1,22 @@
 import { NextResponse } from "next/server";
+import { getRequestContext } from "@/lib/auth/request-context";
 import { createReportPdf, pdfResponse } from "@/lib/pdf/report-pdf";
 import {
   getClientSessionId,
+  getShiftReportForContext,
   getShiftReportForSession,
   missingSessionResponse
 } from "@/lib/reports/api";
 
 async function handlePdf(request: Request, context: { params: Promise<{ id: string }> }) {
+  const requestContext = await getRequestContext(request);
   const sessionId = getClientSessionId(request) || new URL(request.url).searchParams.get("session") || "";
-  if (!sessionId) return missingSessionResponse();
+  if (!requestContext && !sessionId) return missingSessionResponse();
 
   const { id } = await context.params;
-  const { data, error } = await getShiftReportForSession(id, sessionId);
+  const { data, error } = requestContext
+    ? await getShiftReportForContext(id, requestContext)
+    : await getShiftReportForSession(id, sessionId);
   if (error || !data) {
     return NextResponse.json({ error: "Report not found." }, { status: 404 });
   }
@@ -28,7 +33,7 @@ async function handlePdf(request: Request, context: { params: Promise<{ id: stri
   };
 
   const pdf = createReportPdf({
-    companyName: "SupportNote AI Demo Company",
+    companyName: requestContext?.profile?.company?.name || "SupportNote AI Demo Company",
     reportType: "Shift Report",
     participant: report.participant_name,
     date: report.report_date,

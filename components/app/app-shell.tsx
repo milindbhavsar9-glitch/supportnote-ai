@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { BarChart3, ClipboardCheck, FileText, Search, Settings, Users } from "lucide-react";
-import { DemoUserBadge } from "@/components/auth/demo-user-badge";
+import { UserBadge } from "@/components/auth/user-badge";
+import { getCurrentProfile } from "@/lib/auth/profile";
+import { canOpenAdmin } from "@/lib/auth/roles";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -11,7 +13,10 @@ const nav = [
   { href: "/settings", label: "Settings", icon: Settings }
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export async function AppShell({ children }: { children: React.ReactNode }) {
+  const profile = await getCurrentProfile();
+  const visibleNav = nav.filter((item) => item.href !== "/admin" || canOpenAdmin(profile?.role));
+
   return (
     <div className="min-h-screen bg-muted/40">
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r bg-white p-4 lg:block">
@@ -20,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <span>SupportNote AI</span>
         </Link>
         <nav className="mt-8 space-y-1">
-          {nav.map((item) => (
+          {visibleNav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -46,13 +51,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link href="/settings/billing" className="text-sm font-semibold text-primary">
                 Subscription
               </Link>
-              <DemoUserBadge />
+              <UserBadge profile={profile} />
             </div>
           </div>
         </header>
         <main className="px-4 py-6 sm:px-6 lg:px-8">{children}</main>
         <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-white p-2 lg:hidden">
-          {nav.slice(0, 4).map((item) => (
+          {visibleNav.slice(0, 4).map((item) => (
             <Link key={item.href} href={item.href} className="flex flex-col items-center gap-1 rounded-md p-2 text-xs text-muted-foreground">
               <item.icon className="h-5 w-5" />
               {item.label.split(" ")[0]}

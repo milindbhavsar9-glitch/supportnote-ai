@@ -1,21 +1,32 @@
 import { NextResponse } from "next/server";
+import { getRequestContext } from "@/lib/auth/request-context";
+import { canOpenAdmin } from "@/lib/auth/roles";
 import {
+  getCompanyIncidentReports,
+  getCompanyShiftReports,
   getDemoIncidentReports,
   getDemoShiftReports,
   isLateReport,
   normalizeStatus,
   weekStartIso
 } from "@/lib/admin/demo-admin";
-import { getClientSessionId, missingSessionResponse } from "@/lib/reports/api";
+import { missingSessionResponse } from "@/lib/reports/api";
 
 export async function GET(request: Request) {
-  const sessionId = getClientSessionId(request);
-  if (!sessionId) return missingSessionResponse();
+  const context = await getRequestContext(request);
+  if (!context) return missingSessionResponse();
+  if (context.mode === "auth" && !canOpenAdmin(context.profile.role)) {
+    return NextResponse.json({ error: "Admin access is required." }, { status: 403 });
+  }
 
   try {
     const [shiftReports, incidentReports] = await Promise.all([
-      getDemoShiftReports(sessionId),
-      getDemoIncidentReports(sessionId)
+      context.mode === "auth" && context.profile.company_id
+        ? getCompanyShiftReports(context.profile.company_id)
+        : getDemoShiftReports(context.sessionId),
+      context.mode === "auth" && context.profile.company_id
+        ? getCompanyIncidentReports(context.profile.company_id)
+        : getDemoIncidentReports(context.sessionId)
     ]);
 
     const weekStart = weekStartIso();

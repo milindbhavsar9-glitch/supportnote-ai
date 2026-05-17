@@ -41,6 +41,20 @@ export async function getDemoShiftReports(sessionId: string) {
   return data ?? [];
 }
 
+export async function getCompanyShiftReports(companyId: string) {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("shift_reports")
+    .select(
+      "id, participant_name, staff_name, report_date, status, incident_flag, medication_issue_flag, behaviour_issue_flag, line_of_sight_issue_flag, supervisor_notified, created_at, updated_at, submitted_at, completed_at, final_report"
+    )
+    .eq("company_id", companyId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
 export async function getDemoIncidentReports(sessionId: string) {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
@@ -49,6 +63,20 @@ export async function getDemoIncidentReports(sessionId: string) {
       "id, participant_name, staff_name, incident_date, incident_type, status, supervisor_notified, emergency_services_contacted, injury_flag, line_of_sight_issue_flag, created_at, updated_at, submitted_at, completed_at, final_report"
     )
     .contains("form_data", { client_session_id: sessionId })
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function getCompanyIncidentReports(companyId: string) {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("incident_reports")
+    .select(
+      "id, participant_name, staff_name, incident_date, incident_type, status, supervisor_notified, emergency_services_contacted, injury_flag, line_of_sight_issue_flag, created_at, updated_at, submitted_at, completed_at, final_report"
+    )
+    .eq("company_id", companyId)
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
