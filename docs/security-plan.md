@@ -1,6 +1,6 @@
 # SupportNote AI Security And Privacy Plan
 
-SupportNote AI may store sensitive support documentation, so security is product
+SupportNote AI may store sensitive workplace report information, so security is product
 functionality rather than a final polish task.
 
 ## Required Controls
@@ -19,14 +19,15 @@ functionality rather than a final polish task.
 ## AI Handling
 
 The app should send only necessary report fields to OpenAI. Avoid sending extra
-participant identifiers where possible. AI-generated text must remain editable and
+personal identifiers where possible. AI-generated text must remain editable and
 must show this disclaimer:
 
 > AI-generated text must be reviewed before saving or submitting.
 
 ## Product Disclaimer
 
-> SupportNote AI helps prepare documentation but does not replace your
-> organisation's policies, supervisor review, clinical judgement, or NDIS
-> reporting obligations. Users are responsible for reviewing all AI-generated text
-> before saving or submitting.
+> SupportNote AI helps prepare documentation but does not replace workplace
+> policies, manager review, professional judgement, or legal obligations. Users
+> are responsible for following their workplace policies and legal obligations.
+> Users are responsible for reviewing all AI-generated text before saving or
+> submitting.

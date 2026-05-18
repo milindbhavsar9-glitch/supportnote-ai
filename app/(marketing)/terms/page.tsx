@@ -5,8 +5,9 @@ export default function TermsPage() {
       <div className="mt-6 space-y-5 text-muted-foreground">
         <p>
           SupportNote AI helps prepare documentation but does not replace your
-          organisation’s policies, supervisor review, clinical judgement, or NDIS
-          reporting obligations.
+          workplace policies, manager review, professional judgement, or legal
+          obligations. Users are responsible for following their workplace policies
+          and legal obligations.
         </p>
         <p>
           Users are responsible for the accuracy, completeness, and appropriateness
@@ -14,13 +15,13 @@ export default function TermsPage() {
           text must be reviewed and edited before use.
         </p>
         <p>
-          You must only use the service for support documentation you are authorised
+          You must only use the service for workplace documentation you are authorised
           to prepare. You must not use SupportNote AI to hide, minimise, alter, or
           misrepresent incident facts.
         </p>
         <p>
           Subscription billing, plan changes, cancellations, failed payments, and
-          customer portal access are handled through Stripe. Your organisation is
+          customer portal access are handled through Stripe. Your workplace is
           responsible for ensuring the chosen plan is appropriate for its staff and
           reporting needs.
         </p>

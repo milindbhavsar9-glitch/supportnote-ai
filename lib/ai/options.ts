@@ -20,7 +20,7 @@ export const aiWritingOptions = [
     id: "incident_factual_summary",
     label: "Generate incident-style factual summary",
     prompt:
-      "Create a factual incident-style summary. Use a clear before, during, after structure where the information is available."
+      "Create a factual incident-note summary. Use a clear before, during, after structure where the information is available."
   },
   {
     id: "fix_grammar",

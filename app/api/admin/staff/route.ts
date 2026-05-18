@@ -8,7 +8,7 @@ import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const staffSchema = z.object({
   name: z.string().min(1),
-  role: z.string().optional().default("Support Worker"),
+  role: z.string().optional().default("Worker"),
   email: z.string().optional().default(""),
   phone: z.string().optional().default("")
 });

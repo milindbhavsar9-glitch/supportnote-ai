@@ -82,17 +82,17 @@ export function IncidentReportBuilder() {
     "Self-harm",
     "Fall",
     "Elopement / absconding",
-    "Medication error",
+    "Task / procedure error",
     "Injury",
-    "Missing participant",
+    "Missing person",
     "Location unknown",
-    "Neglect concern"
+    "Policy concern"
   ].includes(form.incidentType);
   const hasLineOfSightIssue =
     form.lineOfSightMaintained === "No" ||
     form.participantLocationUnknown === "Yes" ||
     form.participantUnsupervised === "Yes" ||
-    ["Missing participant", "Location unknown"].includes(form.incidentType);
+    ["Missing person", "Location unknown"].includes(form.incidentType);
 
   useEffect(() => {
     if (initialized.current) return;
@@ -107,7 +107,7 @@ export function IncidentReportBuilder() {
   async function saveDraft({ quiet = false }: { quiet?: boolean } = {}) {
     if (!form.clientSessionId || form.clientSessionId === "pending") return "";
     if (!form.participantName || !form.staffName || !form.incidentDate || !form.location || !form.incidentType) {
-      if (!quiet) setMessage("Add participant, date, location, report completed by, and incident type before saving.");
+      if (!quiet) setMessage("Add person/area, date, location, report completed by, and incident type before saving.");
       return "";
     }
 
@@ -200,10 +200,10 @@ export function IncidentReportBuilder() {
     <div className="mx-auto max-w-5xl pb-28">
       <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-semibold text-primary">Phase 3 Incident Reports</p>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight">Incident Report Builder</h1>
+          <p className="text-sm font-semibold text-primary">Incident Notes</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight">Incident Note Builder</h1>
           <p className="mt-2 text-muted-foreground">
-            Save real incident drafts to Supabase, track line of sight concerns, preview the final report, copy it, submit it, and find it in Search Records.
+            Save incident drafts to Supabase, track visibility or safety concerns, preview the final note, copy it, submit it, and find it in Search Records.
           </p>
         </div>
         <div className="rounded-md border bg-white px-4 py-3 text-sm">
@@ -213,14 +213,14 @@ export function IncidentReportBuilder() {
       </div>
 
       <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
-        Demo saving is active. Use fake participant names while login is still being built.
+        Demo saving is active. Use fake workplace names only while testing.
       </div>
 
       {(isHighRisk || hasLineOfSightIssue) && (
         <div className="mb-6 flex gap-3 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-950">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
           <p>
-            This incident may require supervisor notification and formal incident reporting. Follow your organisation&apos;s policy and NDIS reporting requirements.
+            This incident may require manager notification and formal incident reporting. Follow your workplace policies and legal obligations.
           </p>
         </div>
       )}
@@ -230,7 +230,7 @@ export function IncidentReportBuilder() {
           <Card>
             <CardHeader><CardTitle>Incident details</CardTitle></CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
-              <Input label="Participant name" value={form.participantName} onChange={(value) => update("participantName", value)} />
+              <Input label="Person / area" value={form.participantName} onChange={(value) => update("participantName", value)} />
               <Input label="Date of incident" type="date" value={form.incidentDate} onChange={(value) => update("incidentDate", value)} />
               <Input label="Time of incident" type="time" value={form.incidentTime} onChange={(value) => update("incidentTime", value)} />
               <Input label="Report completed by" value={form.staffName} onChange={(value) => update("staffName", value)} />
@@ -278,9 +278,9 @@ export function IncidentReportBuilder() {
               <Textarea label="First aid provided" value={form.firstAidProvided} onChange={(value) => update("firstAidProvided", value)} />
               <Textarea label="Immediate safety actions" value={form.immediateSafetyActions} onChange={(value) => update("immediateSafetyActions", value)} />
               <YesNo label="Emergency services contacted?" value={form.emergencyServicesContacted} onChange={(value) => update("emergencyServicesContacted", value)} />
-              <YesNo label="Supervisor notified?" value={form.supervisorNotified} onChange={(value) => update("supervisorNotified", value)} />
+              <YesNo label="Manager / supervisor notified?" value={form.supervisorNotified} onChange={(value) => update("supervisorNotified", value)} />
               <div className="space-y-2">
-                <p className="text-sm font-medium">Family / guardian notified?</p>
+                <p className="text-sm font-medium">Other required contact notified?</p>
                 <div className="grid gap-2 sm:grid-cols-3">
                   {["Yes", "No", "Not required"].map((choice) => (
                     <OptionButton key={choice} label={choice} selected={form.familyGuardianNotified === choice} onClick={() => update("familyGuardianNotified", choice)} />
@@ -291,15 +291,15 @@ export function IncidentReportBuilder() {
           </Card>
 
           <Card>
-            <CardHeader><CardTitle>Line of Sight / Location Concerns</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Visibility / Location Concerns</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
-                If participant location was unknown, line of sight was not maintained, or the participant was unsupervised, notify your supervisor and follow company policy.
+                If location was unknown, visibility was not maintained, or a person or work area was unattended, notify the appropriate manager or supervisor and follow workplace policies.
               </div>
               <div className="space-y-4">
-                <YesNo label="Was visual or auditory line of sight maintained?" value={form.lineOfSightMaintained} onChange={(value) => update("lineOfSightMaintained", value)} />
-                <YesNo label="Was participant location unknown at any time?" value={form.participantLocationUnknown} onChange={(value) => update("participantLocationUnknown", value)} />
-                <YesNo label="Was participant ever unsupervised?" value={form.participantUnsupervised} onChange={(value) => update("participantUnsupervised", value)} />
+                <YesNo label="Was visibility maintained?" value={form.lineOfSightMaintained} onChange={(value) => update("lineOfSightMaintained", value)} />
+                <YesNo label="Was location unknown at any time?" value={form.participantLocationUnknown} onChange={(value) => update("participantLocationUnknown", value)} />
+                <YesNo label="Was the person or area ever unattended?" value={form.participantUnsupervised} onChange={(value) => update("participantUnsupervised", value)} />
               </div>
             </CardContent>
           </Card>
@@ -329,7 +329,7 @@ export function IncidentReportBuilder() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Final Incident Preview</CardTitle>
+                <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Final Incident Note Preview</CardTitle>
               </CardHeader>
               <CardContent>
                 <pre className={`max-h-[720px] overflow-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm leading-6 ${showPreview ? "" : "hidden lg:block"}`}>

@@ -57,7 +57,7 @@ export async function GET(request: Request) {
         status: normalizeStatus(report),
         incidentType: report.incident_type,
         incidentFlag: true,
-        medicationIssueFlag: report.incident_type === "Medication error",
+        medicationIssueFlag: ["Medication error", "Task / procedure error"].includes(report.incident_type),
         lineOfSightIssueFlag: Boolean(report.line_of_sight_issue_flag),
         needsReview: ["submitted", "completed", "late"].includes(normalizeStatus(report)),
         finalReport: report.final_report,

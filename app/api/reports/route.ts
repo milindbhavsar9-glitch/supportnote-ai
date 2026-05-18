@@ -76,7 +76,9 @@ export async function GET(request: Request) {
         report_type: "incident",
         report_date: (row as { incident_date?: string }).incident_date,
         incident_flag: true,
-        medication_issue_flag: (row as { incident_type?: string }).incident_type === "Medication error",
+        medication_issue_flag: ["Medication error", "Task / procedure error"].includes(
+          (row as { incident_type?: string }).incident_type ?? ""
+        ),
         behaviour_issue_flag: ["Physical aggression", "Verbal threat", "Property damage"].includes(
           (row as { incident_type?: string }).incident_type ?? ""
         )

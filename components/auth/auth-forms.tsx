@@ -172,14 +172,15 @@ export function SignupForm() {
             <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/ai-usage-disclaimer" target="_blank">
               AI Usage Disclaimer
             </Link>
-            . I understand that SupportNote AI helps prepare documentation but does not replace my organisation&apos;s policies,
-            supervisor review, clinical judgement, or NDIS reporting obligations. I am responsible for reviewing all AI-generated
+            . I understand that SupportNote AI helps prepare documentation but does not replace my workplace policies,
+            manager review, professional judgement, or legal obligations. Users are responsible for following their workplace
+            policies and legal obligations. I am responsible for reviewing all AI-generated
             text before saving, copying, exporting, or submitting any report.
           </span>
         </label>
         <p className="mt-3 text-xs leading-5 text-muted-foreground">
-          Please do not enter unnecessary personal or sensitive information. Only record information required for your support work
-          and follow your organisation&apos;s privacy and reporting policies.
+          Please do not enter unnecessary personal or sensitive information. Only record information required for your work
+          and follow your workplace privacy and reporting policies.
         </p>
       </div>
       <StatusMessage status={status} />

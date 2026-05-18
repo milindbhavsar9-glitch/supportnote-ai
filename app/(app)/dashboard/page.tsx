@@ -5,7 +5,7 @@ import { SubscriptionStatusCard } from "@/components/billing/subscription-status
 
 const cards = [
   { title: "Create Shift Report", href: "/reports/shift/new", icon: ClipboardCheck },
-  { title: "Create Incident Report", href: "/reports/incident/new", icon: FileText },
+  { title: "Create Incident Note", href: "/reports/incident/new", icon: FileText },
   { title: "My Draft Reports", href: "/reports?status=draft", icon: Clock },
   { title: "Completed Reports", href: "/reports?status=completed", icon: ClipboardCheck },
   { title: "Search Records", href: "/reports", icon: Search },
@@ -15,7 +15,7 @@ const cards = [
 const reports = [
   ["Alex M.", "Shift", "Today", "Draft", ""],
   ["Taylor R.", "Incident", "Yesterday", "Submitted", "Incident flag"],
-  ["Jordan K.", "Shift", "May 14", "Completed", "Medication issue"]
+  ["Jordan K.", "Shift", "May 14", "Completed", "Task / procedure issue"]
 ];
 
 export default function DashboardPage() {
@@ -47,7 +47,7 @@ export default function DashboardPage() {
             <table className="w-full min-w-[720px] text-left text-sm">
               <thead className="text-muted-foreground">
                 <tr>
-                  <th className="py-2">Participant</th>
+                  <th className="py-2">Person / area</th>
                   <th>Report type</th>
                   <th>Date</th>
                   <th>Status</th>

@@ -9,11 +9,12 @@ export default function PrivacyPage() {
           such as legal acceptance timestamps.
         </p>
         <p>
-          Users may enter support and report information such as participant display
-          names, staff names, shift notes, incident details, medication flags,
-          behaviour flags, line-of-sight concerns, signatures, and review comments.
+          Users may enter report information such as person/area display names,
+          workplace subject names, staff names, shift notes, incident details,
+          task/procedure flags, behaviour or conduct flags, visibility concerns,
+          signatures, and review comments.
           Users should only enter information they are authorised and required to
-          record for their support work.
+          record for their work.
         </p>
         <p>
           Information is collected to create, store, search, review, copy, export,
@@ -21,7 +22,7 @@ export default function PrivacyPage() {
           Supabase/PostgreSQL with tenant and role-based access controls.
         </p>
         <p>
-          Access depends on account role. Solo users and support workers should only
+          Access depends on account role. Solo users and workers should only
           access their own reports. Team leaders and company admins may access team
           reports where their company has permission to do so.
         </p>
@@ -38,7 +39,7 @@ export default function PrivacyPage() {
         <p>
           Users can request account deletion or data export through account settings
           or by contacting privacy@supportnote.ai. Some records may need to be
-          retained according to legal, audit, billing, or organisational obligations.
+          retained according to legal, audit, billing, or workplace obligations.
         </p>
         <p>
           This privacy policy is a working launch draft. The app owner should ask an

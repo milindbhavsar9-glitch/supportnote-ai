@@ -17,7 +17,7 @@ const choiceGroups = {
   shiftType: ["Day", "Evening", "Overnight", "Sleepover"],
   yesNo: ["Yes", "No"],
   yesNoNa: ["Yes", "No", "Not applicable"],
-  medication: ["Yes, chart signed", "No", "Refused", "Held", "Not scheduled"],
+  medication: ["Completed", "Not required", "Refused / declined", "Held / delayed", "Not scheduled"],
   meal: ["25%", "50%", "75%", "100%", "Not applicable"],
   fluids: ["Adequate", "Poor", "Refused"],
   mood: ["Stable", "Anxious", "Irritable", "Withdrawn", "Sad", "Elated", "Flat", "Labile", "Calm", "Happy"],
@@ -26,9 +26,9 @@ const choiceGroups = {
 };
 
 const positiveBehaviour = ["Helpful", "Calm", "Participated", "Friendly", "Cooperative", "Other"];
-const challengingBehaviour = ["Verbal aggression", "Property damage", "Self-isolation", "Physical aggression", "Refused support", "Agitated", "Other"];
-const deEscalation = ["Redirection", "Calm talk", "Space given", "PRN medication", "Positive reassurance", "Distraction activity", "Other"];
-const followUp = ["Medical", "Behavioural", "Medication", "Family contact", "Appointment", "Cleaning", "Shopping", "Other"];
+const challengingBehaviour = ["Verbal aggression", "Property damage", "Withdrew from task", "Physical aggression", "Refused task", "Agitated", "Other"];
+const deEscalation = ["Redirection", "Calm communication", "Space given", "Manager support", "Positive reassurance", "Distraction activity", "Other"];
+const followUp = ["Safety", "Behaviour / conduct", "Task / procedure", "Customer / team contact", "Appointment", "Cleaning", "Supplies", "Other"];
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
@@ -140,7 +140,7 @@ export function ShiftReportBuilder() {
     if (!form.clientSessionId || form.clientSessionId === "pending") return "";
     if (!form.participantName || !form.staffName || !form.reportDate) {
       if (!quiet) {
-        setMessage("Add participant, staff, and date before saving.");
+        setMessage("Add person/area, staff, and date before saving.");
       }
       return "";
     }
@@ -234,7 +234,7 @@ export function ShiftReportBuilder() {
     <div className="mx-auto max-w-5xl pb-28">
       <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-semibold text-primary">Phase 2 Shift Reports</p>
+          <p className="text-sm font-semibold text-primary">Shift Reports</p>
           <h1 className="mt-1 text-3xl font-bold tracking-tight">Shift Report Builder</h1>
           <p className="mt-2 text-muted-foreground">
             Create a real draft, autosave it to Supabase every 10 seconds, preview the final report, copy it, submit it, and find it in Search Records.
@@ -247,7 +247,7 @@ export function ShiftReportBuilder() {
       </div>
 
       <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
-        Demo saving is active. Use fake participant names while login is still being built.
+        Demo saving is active. Use fake workplace names only while testing.
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_0.85fr]">
@@ -257,7 +257,7 @@ export function ShiftReportBuilder() {
               <CardTitle>Shift details</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
-              <Input label="Participant" value={form.participantName} onChange={(value) => update("participantName", value)} />
+              <Input label="Person / area" value={form.participantName} onChange={(value) => update("participantName", value)} />
               <Input label="Date" type="date" value={form.reportDate} onChange={(value) => update("reportDate", value)} />
               <Input label="Staff" value={form.staffName} onChange={(value) => update("staffName", value)} />
               <div className="space-y-2">
@@ -285,7 +285,7 @@ export function ShiftReportBuilder() {
           </Card>
 
           <Card>
-            <CardHeader><CardTitle>2. Participant Location Timeline</CardTitle></CardHeader>
+            <CardHeader><CardTitle>2. Location / Work Area Timeline</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <Input label="Time from" type="time" value={form.locationFrom} onChange={(value) => update("locationFrom", value)} />
@@ -306,16 +306,16 @@ export function ShiftReportBuilder() {
           </Card>
 
           <Card>
-            <CardHeader><CardTitle>3. Line of Sight / Duty of Care</CardTitle></CardHeader>
+            <CardHeader><CardTitle>3. Visibility / Supervision</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
-                For 1:1 support, the participant should remain within visual or auditory line of sight unless sleeping in a safe, risk-assessed bed. If participant location was unknown, notify your supervisor and follow company policy.
+                Use this section to record visibility, supervision, or safety checks where required. If a person or work area was unattended or location was unknown, notify the appropriate manager or supervisor and follow workplace policies.
               </div>
               {[
-                ["oneToOneSupport", "Was this 1:1 support?", choiceGroups.yesNo],
-                ["lineOfSightMaintained", "Was visual or auditory line of sight maintained?", choiceGroups.yesNoNa],
-                ["participantUnsupervised", "Was participant ever unsupervised?", choiceGroups.yesNo],
-                ["locationUnknown", "Was participant location unknown at any time?", choiceGroups.yesNo]
+                ["oneToOneSupport", "Was this 1:1 work or supervision?", choiceGroups.yesNo],
+                ["lineOfSightMaintained", "Was visibility maintained?", choiceGroups.yesNoNa],
+                ["participantUnsupervised", "Was the person or area ever unattended?", choiceGroups.yesNo],
+                ["locationUnknown", "Was location unknown at any time?", choiceGroups.yesNo]
               ].map(([key, label, options]) => (
                 <div key={String(key)} className="space-y-2">
                   <p className="text-sm font-medium">{String(label)}</p>
@@ -331,17 +331,17 @@ export function ShiftReportBuilder() {
           </Card>
 
           <Card>
-            <CardHeader><CardTitle>4. Medication</CardTitle></CardHeader>
+            <CardHeader><CardTitle>4. Scheduled Tasks / Procedures</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {choiceGroups.medication.map((choice) => (
                   <OptionButton key={choice} label={choice} selected={form.medicationStatus === choice} onClick={() => update("medicationStatus", choice)} />
                 ))}
               </div>
-              {["Refused", "Held"].includes(form.medicationStatus) ? (
+              {["Refused / declined", "Held / delayed"].includes(form.medicationStatus) ? (
                 <div className="grid gap-4 md:grid-cols-2">
                   <Input label="Reason" value={form.medicationReason} onChange={(value) => update("medicationReason", value)} />
-                  <Input label="Supervisor notified? Yes / No" value={form.medicationSupervisorNotified} onChange={(value) => update("medicationSupervisorNotified", value)} />
+                  <Input label="Manager / supervisor notified? Yes / No" value={form.medicationSupervisorNotified} onChange={(value) => update("medicationSupervisorNotified", value)} />
                   <div className="md:col-span-2">
                     <Textarea label="Follow-up required" value={form.medicationFollowUp} onChange={(value) => update("medicationFollowUp", value)} />
                   </div>
@@ -363,8 +363,8 @@ export function ShiftReportBuilder() {
                   </div>
                 </div>
               ))}
-              <Input label="Snacks: Yes / No" value={form.snacks} onChange={(value) => update("snacks", value)} />
-              <Input label="Fluids: cups or status" value={form.fluids} onChange={(value) => update("fluids", value)} />
+              <Input label="Breaks / extras: Yes / No" value={form.snacks} onChange={(value) => update("snacks", value)} />
+              <Input label="Supplies / resources: quantity or status" value={form.fluids} onChange={(value) => update("fluids", value)} />
               <Textarea label="Notes" value={form.mealNotes} onChange={(value) => update("mealNotes", value)} />
             </CardContent>
           </Card>
@@ -390,7 +390,7 @@ export function ShiftReportBuilder() {
               {form.incidentOccurred === "Yes" ? (
                 <>
                   <div className="rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
-                    This may require supervisor notification and formal incident reporting. Follow your organisation&apos;s policy and NDIS reporting requirements.
+                    This may require manager notification and formal incident reporting. Follow your workplace policies and legal obligations.
                   </div>
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                     {incidentTypes.map((type) => (
@@ -400,8 +400,8 @@ export function ShiftReportBuilder() {
                   <Textarea label="Brief description" value={form.incidentDescription} onChange={(value) => update("incidentDescription", value)} />
                   <Textarea label="Immediate action taken" value={form.immediateAction} onChange={(value) => update("immediateAction", value)} />
                   <Input label="Witnesses" value={form.witnesses} onChange={(value) => update("witnesses", value)} />
-                  <Input label="Supervisor notified? Yes / No" value={form.supervisorNotified} onChange={(value) => update("supervisorNotified", value)} />
-                  <Input label="Family / guardian notified?" value={form.guardianNotified} onChange={(value) => update("guardianNotified", value)} />
+                  <Input label="Manager / supervisor notified? Yes / No" value={form.supervisorNotified} onChange={(value) => update("supervisorNotified", value)} />
+                  <Input label="Other required contact notified?" value={form.guardianNotified} onChange={(value) => update("guardianNotified", value)} />
                   <Input label="Report filed? Yes / No" value={form.reportFiled} onChange={(value) => update("reportFiled", value)} />
                   <Input label="Report number" value={form.reportNumber} onChange={(value) => update("reportNumber", value)} />
                 </>
@@ -412,8 +412,8 @@ export function ShiftReportBuilder() {
           <Card>
             <CardHeader><CardTitle>8-12. Final Notes</CardTitle></CardHeader>
             <CardContent className="space-y-5">
-              <Textarea label="Client said" value={form.clientQuote} onChange={(value) => update("clientQuote", value)} />
-              <MultiChoice title="Support provided" options={supportProvidedOptions} values={form.supportProvided} onToggle={(value) => toggleList("supportProvided", value)} />
+              <Textarea label="Exact words or key note" value={form.clientQuote} onChange={(value) => update("clientQuote", value)} />
+              <MultiChoice title="Work completed / support provided" options={supportProvidedOptions} values={form.supportProvided} onToggle={(value) => toggleList("supportProvided", value)} />
               <div className="grid gap-4 md:grid-cols-3">
                 <Input label="Mood" value={form.mood} onChange={(value) => update("mood", value)} />
                 <Input label="Engagement" value={form.engagement} onChange={(value) => update("engagement", value)} />

@@ -23,7 +23,7 @@ export default async function SettingsPage() {
       </p>
       {!profile ? (
         <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          Demo mode is active. Log in with a real Supabase account before entering any real participant data.
+          Demo mode is active. Log in with a real Supabase account before entering any real workplace or personal data.
         </div>
       ) : null}
       <Card className="mt-6 max-w-2xl">

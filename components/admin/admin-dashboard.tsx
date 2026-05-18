@@ -8,7 +8,6 @@ import {
   ClipboardList,
   FileWarning,
   MessageSquare,
-  Pill,
   Search,
   Users
 } from "lucide-react";
@@ -54,8 +53,8 @@ const metricCards = [
   ["Late reports", "lateReports", AlertTriangle],
   ["Incident reports", "incidentReports", FileWarning],
   ["Reports needing review", "reportsNeedingReview", Users],
-  ["Medication issues", "medicationIssues", Pill],
-  ["Line of sight issues", "lineOfSightIssues", AlertTriangle]
+  ["Task / procedure issues", "medicationIssues", ClipboardList],
+  ["Visibility issues", "lineOfSightIssues", AlertTriangle]
 ] as const;
 
 export function AdminDashboard() {
@@ -167,12 +166,12 @@ export function AdminDashboard() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Company Admin Dashboard</h1>
           <p className="mt-2 text-muted-foreground">
-            Review team reports, compliance flags, participants, and staff activity.
+            Review team reports, workplace flags, people/areas, and staff activity.
           </p>
         </div>
         <div className="flex gap-2">
           <Button asChild variant="outline"><Link href="/admin/staff">Staff</Link></Button>
-          <Button asChild variant="outline"><Link href="/admin/participants">Participants</Link></Button>
+          <Button asChild variant="outline"><Link href="/admin/participants">People / Areas</Link></Button>
         </div>
       </div>
 
@@ -205,8 +204,8 @@ export function AdminDashboard() {
           <select className="h-11 rounded-md border px-3" value={flag} onChange={(event) => setFlag(event.target.value)}>
             <option value="">All flags</option>
             <option value="incident">Incident flag</option>
-            <option value="medication">Medication issue</option>
-            <option value="line_of_sight">Line of sight issue</option>
+            <option value="medication">Task / procedure issue</option>
+            <option value="line_of_sight">Visibility issue</option>
             <option value="needs_review">Needs review</option>
           </select>
           <Button onClick={() => void loadReports()}><Search className="h-4 w-4" /> Search</Button>
@@ -230,8 +229,8 @@ export function AdminDashboard() {
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold">
                         {report.incidentFlag ? <Badge label="Incident" /> : null}
-                        {report.medicationIssueFlag ? <Badge label="Medication issue" /> : null}
-                        {report.lineOfSightIssueFlag ? <Badge label="Line of sight" /> : null}
+                        {report.medicationIssueFlag ? <Badge label="Task / procedure issue" /> : null}
+                        {report.lineOfSightIssueFlag ? <Badge label="Visibility issue" /> : null}
                         {report.needsReview ? <Badge label="Needs review" /> : null}
                       </div>
                     </div>

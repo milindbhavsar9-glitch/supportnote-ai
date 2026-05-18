@@ -42,7 +42,7 @@ export const plans: PlanLimit[] = [
     id: "solo_worker",
     name: "Solo Worker",
     price: "AUD $12.99/mo",
-    description: "For independent support workers who need fast professional notes.",
+    description: "For individual workers who need fast, clear shift notes and incident records.",
     cta: "Choose Solo",
     limits: {
       users: 1,
@@ -63,7 +63,7 @@ export const plans: PlanLimit[] = [
     id: "small_team",
     name: "Small Team",
     price: "AUD $49/mo",
-    description: "For small SIL, NDIS, and mental health support teams.",
+    description: "For small workplace teams that need shared reporting, review, and records.",
     cta: "Choose Team",
     limits: {
       users: 5,
@@ -74,7 +74,7 @@ export const plans: PlanLimit[] = [
     features: [
       "Up to 5 staff users",
       "Company dashboard",
-      "Participant and staff lists",
+      "Person/area and staff lists",
       "Admin review",
       "Late report tracking",
       "Incident flags",

@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ participants: data ?? [] });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Could not load participants." },
+      { error: error instanceof Error ? error.message : "Could not load people/areas." },
       { status: 500 }
     );
   }
@@ -43,12 +43,12 @@ export async function POST(request: Request) {
 
   const parsed = participantSchema.safeParse(await request.json());
   if (!parsed.success) {
-    return NextResponse.json({ error: "Participant display name is required." }, { status: 400 });
+    return NextResponse.json({ error: "Person/area display name is required." }, { status: 400 });
   }
 
   try {
     if (context.mode === "auth" && !canOpenAdmin(context.profile.role)) {
-      return NextResponse.json({ error: "Only team leaders and company admins can manage participants." }, { status: 403 });
+      return NextResponse.json({ error: "Only team leaders and company admins can manage people/areas." }, { status: 403 });
     }
 
     const supabase = getSupabaseAdmin();
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ participant: data });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Could not create participant." },
+      { error: error instanceof Error ? error.message : "Could not create person/area." },
       { status: 500 }
     );
   }

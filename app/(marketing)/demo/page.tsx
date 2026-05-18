@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const sampleReports = [
   ["Alex M.", "Shift", "Completed", "No incident"],
   ["Taylor R.", "Incident", "Needs review", "Location unknown"],
-  ["Jordan K.", "Shift", "Draft", "Medication issue"]
+  ["Jordan K.", "Shift", "Draft", "Task / procedure issue"]
 ];
 
 export default function DemoPage() {
@@ -17,8 +17,8 @@ export default function DemoPage() {
           <p className="text-sm font-semibold uppercase tracking-wide text-primary">Demo mode</p>
           <h1 className="mt-3 text-4xl font-bold tracking-tight">Fake data, real workflow preview.</h1>
           <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-            Demo mode uses sample participants and reports only. Do not enter real
-            participant information here.
+            Demo mode uses sample people/areas and reports only. Do not enter real
+            workplace or personal information here.
           </p>
         </div>
         <Button asChild>
@@ -50,7 +50,7 @@ export default function DemoPage() {
             <table className="w-full min-w-[620px] text-left text-sm">
               <thead className="text-muted-foreground">
                 <tr>
-                  <th className="py-2">Participant</th>
+                  <th className="py-2">Person / area</th>
                   <th>Type</th>
                   <th>Status</th>
                   <th>Flag</th>

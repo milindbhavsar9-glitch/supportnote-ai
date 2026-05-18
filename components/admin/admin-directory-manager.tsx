@@ -23,14 +23,14 @@ export function AdminDirectoryManager({ mode }: { mode: DirectoryMode }) {
   const [records, setRecords] = useState<DirectoryRecord[]>([]);
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState("Support Worker");
+  const [role, setRole] = useState("Worker");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [referenceCode, setReferenceCode] = useState("");
   const [notes, setNotes] = useState("");
 
   const isStaff = mode === "staff";
-  const title = isStaff ? "Staff Management" : "Participant Management";
+  const title = isStaff ? "Staff Management" : "People / Areas Management";
   const endpoint = isStaff ? "/api/admin/staff" : "/api/participants";
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function AdminDirectoryManager({ mode }: { mode: DirectoryMode }) {
 
   async function addRecord() {
     if (!name.trim()) {
-      setMessage(isStaff ? "Add staff name first." : "Add participant name first.");
+      setMessage(isStaff ? "Add staff name first." : "Add person/area name first.");
       return;
     }
 
@@ -88,12 +88,12 @@ export function AdminDirectoryManager({ mode }: { mode: DirectoryMode }) {
     }
 
     setName("");
-    setRole("Support Worker");
+    setRole("Worker");
     setEmail("");
     setPhone("");
     setReferenceCode("");
     setNotes("");
-    setMessage(isStaff ? "Staff member added." : "Participant added.");
+    setMessage(isStaff ? "Staff member added." : "Person/area added.");
     await loadRecords();
   }
 
@@ -114,12 +114,12 @@ export function AdminDirectoryManager({ mode }: { mode: DirectoryMode }) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Plus className="h-5 w-5 text-primary" />
-              Add {isStaff ? "staff" : "participant"}
+              Add {isStaff ? "staff" : "person / area"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <label className="space-y-2 text-sm font-medium">
-              <span>{isStaff ? "Staff name" : "Participant display name"}</span>
+              <span>{isStaff ? "Staff name" : "Person / area display name"}</span>
               <input className="h-11 w-full rounded-md border px-3" value={name} onChange={(event) => setName(event.target.value)} />
             </label>
 
@@ -128,7 +128,7 @@ export function AdminDirectoryManager({ mode }: { mode: DirectoryMode }) {
                 <label className="space-y-2 text-sm font-medium">
                   <span>Role</span>
                   <select className="h-11 w-full rounded-md border px-3" value={role} onChange={(event) => setRole(event.target.value)}>
-                    <option>Support Worker</option>
+                    <option>Worker</option>
                     <option>Team Leader</option>
                     <option>Company Admin</option>
                   </select>
@@ -156,7 +156,7 @@ export function AdminDirectoryManager({ mode }: { mode: DirectoryMode }) {
             )}
 
             <Button className="w-full" onClick={() => void addRecord()}>
-              Add {isStaff ? "Staff" : "Participant"}
+              Add {isStaff ? "Staff" : "Person / Area"}
             </Button>
             {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
           </CardContent>
@@ -166,7 +166,7 @@ export function AdminDirectoryManager({ mode }: { mode: DirectoryMode }) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
-              Saved {isStaff ? "staff" : "participants"}
+              Saved {isStaff ? "staff" : "people / areas"}
             </CardTitle>
           </CardHeader>
           <CardContent>

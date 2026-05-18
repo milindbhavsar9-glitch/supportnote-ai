@@ -42,7 +42,7 @@ function buildTextLines(input: PdfReportInput) {
   const header = [
     input.companyName,
     input.reportType.toUpperCase(),
-    `Participant: ${input.participant}`,
+    `Person / area: ${input.participant}`,
     `Date: ${input.date}`,
     `Staff: ${input.staff}`,
     `${input.timeLabel}: ${input.timeValue}`,

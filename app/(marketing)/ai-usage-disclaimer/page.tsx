@@ -9,20 +9,19 @@ export default function AIUsageDisclaimerPage() {
           for your workplace or reporting obligation.
         </p>
         <p>
-          AI output is not professional, clinical, legal, or supervisor advice. You
+          AI output is not professional, legal, or manager advice. You
           must review, edit, and approve all AI-generated text before saving,
           copying, exporting, or submitting a report.
         </p>
         <p>
           AI must not be used to hide, minimise, soften, exaggerate, or change incident
-          facts. Do not use AI to remove relevant details about risk, injury, location
-          unknown, line of sight, medication error, aggression, self-harm, neglect
-          concern, or required notifications.
+          facts. Do not use AI to remove relevant details about risk, injury, unknown
+          location, visibility concerns, task/procedure errors, aggression, policy
+          concerns, or required notifications.
         </p>
         <p>
-          Serious incidents must be escalated according to your organisation’s policy
-          and any NDIS reporting procedures. SupportNote AI does not replace those
-          obligations.
+          Serious incidents must be escalated according to your workplace policies
+          and legal obligations. SupportNote AI does not replace those obligations.
         </p>
       </div>
     </main>

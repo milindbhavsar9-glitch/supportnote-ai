@@ -84,7 +84,7 @@ export function ReportSearch() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Search Records</h1>
           <p className="mt-2 text-muted-foreground">
-            Find shift reports saved from this browser demo session.
+            Find saved shift reports and incident notes from this browser demo session.
           </p>
         </div>
         <Button asChild>
@@ -102,7 +102,7 @@ export function ReportSearch() {
               value={participant}
               onChange={(event) => setParticipant(event.target.value)}
               className="h-11 rounded-md border px-3"
-              placeholder="Participant"
+              placeholder="Person / area"
             />
             <input
               value={staff}
@@ -117,7 +117,7 @@ export function ReportSearch() {
             >
               <option value="">Any report type</option>
               <option value="shift">Shift</option>
-              <option value="incident">Incident</option>
+              <option value="incident">Incident note</option>
             </select>
             <select
               value={status}
@@ -134,8 +134,8 @@ export function ReportSearch() {
           <div className="grid gap-3 md:grid-cols-3">
             {[
               ["Incident flag", incidentOnly, setIncidentOnly],
-              ["Medication issue", medicationOnly, setMedicationOnly],
-              ["Line of sight issue", lineOfSightOnly, setLineOfSightOnly]
+              ["Task / procedure issue", medicationOnly, setMedicationOnly],
+              ["Visibility issue", lineOfSightOnly, setLineOfSightOnly]
             ].map(([label, checked, setter]) => (
               <label key={String(label)} className="flex min-h-11 items-center gap-3 rounded-md border bg-white px-3 text-sm font-medium">
                 <input
@@ -165,14 +165,14 @@ export function ReportSearch() {
         <CardContent>
           {reports.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No saved shift reports found yet. Create a shift report and click Save Draft.
+              No saved records found yet. Create a shift report or incident note and click Save Draft.
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[780px] text-left text-sm">
                 <thead className="text-muted-foreground">
                   <tr>
-                    <th className="py-2">Participant</th>
+                    <th className="py-2">Person / area</th>
                     <th>Type</th>
                     <th>Staff</th>
                     <th>Date</th>
@@ -193,9 +193,9 @@ export function ReportSearch() {
                       <td>
                         <div className="flex flex-wrap gap-1">
                           {report.incident_flag ? <Flag label="Incident" /> : null}
-                          {report.medication_issue_flag ? <Flag label="Medication" /> : null}
+                          {report.medication_issue_flag ? <Flag label="Task/procedure" /> : null}
                           {report.behaviour_issue_flag ? <Flag label="Behaviour" /> : null}
-                          {report.line_of_sight_issue_flag ? <Flag label="Line of sight" /> : null}
+                          {report.line_of_sight_issue_flag ? <Flag label="Visibility" /> : null}
                           {!report.incident_flag && !report.medication_issue_flag && !report.behaviour_issue_flag && !report.line_of_sight_issue_flag ? (
                             <span className="text-muted-foreground">None</span>
                           ) : null}

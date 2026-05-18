@@ -15,14 +15,14 @@ import { PricingCard } from "@/components/pricing/pricing-card";
 import { plans } from "@/lib/config/plans";
 
 const features = [
-  { title: "Easy tick-box shift notes", icon: CheckSquare },
-  { title: "Incident report builder", icon: FileText },
+  { title: "Easy tick-box shift reports", icon: CheckSquare },
+  { title: "Incident note builder", icon: FileText },
   { title: "AI writing help", icon: Brain },
   { title: "Copy report in one click", icon: ClipboardCopy },
   { title: "PDF export", icon: FileDown },
   { title: "Save report records", icon: Search },
   { title: "Mobile friendly", icon: Smartphone },
-  { title: "Built for support workers", icon: Lock }
+  { title: "Built for workplace teams", icon: Lock }
 ];
 
 export default function HomePage() {
@@ -35,11 +35,11 @@ export default function HomePage() {
               SupportNote AI
             </p>
             <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Create professional shift notes and incident reports in minutes.
+              Create clear shift reports and incident notes in minutes.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-              SupportNote AI helps support workers write clear, factual, and
-              professional notes using easy tick-box forms and AI writing support.
+              SupportNote AI helps workers write clear, factual, and professional
+              notes using easy tick-box forms and AI writing support.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
@@ -70,8 +70,8 @@ export default function HomePage() {
               <div className="mt-6 space-y-3">
                 {[
                   "Was this 1:1 support?",
-                  "Was line of sight maintained?",
-                  "Was participant ever unsupervised?"
+                  "Was visibility maintained?",
+                  "Was the person or area ever unattended?"
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3 rounded-md border p-4">
                     <CheckSquare className="h-6 w-6 text-primary" />
@@ -80,8 +80,8 @@ export default function HomePage() {
                 ))}
               </div>
               <p className="mt-5 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
-                For 1:1 support, the participant should remain within visual or
-                auditory line of sight unless sleeping in a safe, risk-assessed bed.
+                Use this section to record visibility, supervision, and safety
+                checks where they are required by your workplace.
               </p>
             </div>
           </div>
@@ -95,9 +95,8 @@ export default function HomePage() {
               <CardTitle>Problem</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground">
-              Support workers often need to write professional notes after long
-              shifts, under time pressure, and sometimes without strong confidence
-              in written English.
+              Workers often need to write clear notes after long shifts, under time
+              pressure, and sometimes without strong confidence in written English.
             </CardContent>
           </Card>
           <Card>
@@ -105,9 +104,9 @@ export default function HomePage() {
               <CardTitle>Solution</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground">
-              SupportNote AI turns tick boxes, short notes, and required incident
-              details into clear draft reports that workers can review, edit, save,
-              copy, and export.
+              SupportNote AI turns tick boxes, short notes, and incident details
+              into clear draft reports that workers can review, edit, save, copy,
+              and export.
             </CardContent>
           </Card>
         </div>
@@ -133,7 +132,7 @@ export default function HomePage() {
         <h2 className="text-3xl font-bold">How it works</h2>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {[
-            "Choose shift or incident report",
+            "Choose shift report or incident note",
             "Complete simple tick boxes and short notes",
             "Review, copy, save, or export the final report"
           ].map((step, index) => (
@@ -177,7 +176,7 @@ export default function HomePage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-muted-foreground">
               <p><strong className="text-foreground">Does AI submit reports automatically?</strong> No. Workers review and edit AI-generated text before saving or submitting.</p>
-              <p><strong className="text-foreground">Can teams review reports?</strong> Yes. Small Team includes admin review, comments, and compliance flags.</p>
+              <p><strong className="text-foreground">Can teams review reports?</strong> Yes. Small Team includes admin review, comments, and workplace flags.</p>
             </CardContent>
           </Card>
         </div>

@@ -7,8 +7,7 @@ export function MarketingFooter() {
         <div className="md:col-span-2">
           <p className="font-semibold text-foreground">SupportNote AI</p>
           <p className="mt-2 max-w-xl">
-            Documentation support for disability, SIL, NDIS, and mental health
-            support workers.
+            Clear shift reports and incident notes for everyday workplace teams.
           </p>
         </div>
         <div className="space-y-2">

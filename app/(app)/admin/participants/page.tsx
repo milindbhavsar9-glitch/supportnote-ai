@@ -10,7 +10,7 @@ export default async function AdminParticipantsPage() {
       <Card>
         <CardHeader><CardTitle>Admin access required</CardTitle></CardHeader>
         <CardContent className="text-sm text-muted-foreground">
-          Participant management is available to team leaders and company admins.
+          People/areas management is available to team leaders and company admins.
         </CardContent>
       </Card>
     );

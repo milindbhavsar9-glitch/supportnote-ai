@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const incidentReportFormSchema = z.object({
-  participantName: z.string().min(1, "Participant name is required"),
+  participantName: z.string().min(1, "Person, area, or subject is required"),
   incidentDate: z.string().min(1, "Date is required"),
   incidentTime: z.string().optional().default(""),
   location: z.string().min(1, "Location is required"),
@@ -69,10 +69,10 @@ function value(text?: string | null) {
 export function getIncidentReportFlags(form: IncidentReportForm) {
   const injuryFlag = Boolean(
     form.injuriesObserved.trim() ||
-      ["Fall", "Injury", "Self-harm", "Physical aggression"].includes(form.incidentType)
+      ["Fall", "Injury", "Safety concern", "Physical aggression"].includes(form.incidentType)
   );
   const lineOfSightIssueFlag =
-    form.incidentType === "Missing participant" ||
+    form.incidentType === "Missing person" ||
     form.incidentType === "Location unknown" ||
     form.lineOfSightMaintained === "No" ||
     form.participantLocationUnknown === "Yes" ||
@@ -93,7 +93,7 @@ export function buildIncidentReportText(form: IncidentReportForm) {
 
   return `INCIDENT REPORT
 
-Participant: ${value(form.participantName)}
+Person / area: ${value(form.participantName)}
 Date of incident: ${value(form.incidentDate)}
 Time of incident: ${value(form.incidentTime)}
 Location: ${value(form.location)}
@@ -122,14 +122,14 @@ ${value(form.firstAidProvided)}
 
 7. Notifications and Safety Actions
 Emergency services contacted: ${value(form.emergencyServicesContacted)}
-Supervisor notified: ${value(form.supervisorNotified)}
-Family / guardian notified: ${value(form.familyGuardianNotified)}
+Manager / supervisor notified: ${value(form.supervisorNotified)}
+Other required contact notified: ${value(form.familyGuardianNotified)}
 Immediate safety actions: ${value(form.immediateSafetyActions)}
 
-8. Line of Sight / Location Concerns
-Line of sight maintained: ${value(form.lineOfSightMaintained)}
-Participant location unknown: ${value(form.participantLocationUnknown)}
-Participant unsupervised: ${value(form.participantUnsupervised)}
+8. Visibility / Location Concerns
+Visibility maintained: ${value(form.lineOfSightMaintained)}
+Location unknown: ${value(form.participantLocationUnknown)}
+Person or area unattended: ${value(form.participantUnsupervised)}
 
 9. Follow-up Required
 ${value(form.followUpRequired)}

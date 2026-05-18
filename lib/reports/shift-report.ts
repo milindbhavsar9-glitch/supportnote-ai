@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const shiftReportFormSchema = z.object({
-  participantName: z.string().min(1, "Participant name is required"),
+  participantName: z.string().min(1, "Person, area, or subject is required"),
   reportDate: z.string().min(1, "Date is required"),
   shiftType: z.string().optional().default(""),
   staffName: z.string().min(1, "Staff name is required"),
@@ -133,7 +133,7 @@ export function buildShiftReportText(form: ShiftReportForm) {
 
   return `SHIFT REPORT
 
-Participant: ${value(form.participantName)}
+Person / area: ${value(form.participantName)}
 Date: ${value(form.reportDate)}
 Shift: ${value(form.shiftType)}
 Staff: ${value(form.staffName)}
@@ -145,24 +145,24 @@ Time: ${value(form.handoverTime)}
 From: ${value(form.handoverFrom)}
 Key issues: ${value(form.handoverKeyIssues)}
 
-2. Participant Location Timeline
+2. Location / Work Area Timeline
 Time from: ${value(form.locationFrom)}
 Time to: ${value(form.locationTo)}
 Location: ${value(form.location)}
 Staff present: ${value(form.staffPresent)}
 Notes: ${value(form.locationNotes)}
 
-3. Line of Sight / Supervision
-1:1 support: ${value(form.oneToOneSupport)}
-Line of sight maintained: ${value(form.lineOfSightMaintained)}
-Participant unsupervised: ${value(form.participantUnsupervised)}
-Participant location unknown: ${value(form.locationUnknown)}
+3. Visibility / Supervision
+1:1 work or supervision: ${value(form.oneToOneSupport)}
+Visibility maintained: ${value(form.lineOfSightMaintained)}
+Person or area unattended: ${value(form.participantUnsupervised)}
+Location unknown: ${value(form.locationUnknown)}
 Explanation: ${value(form.lineOfSightExplain)}
 
-4. Medication
-Medication status: ${value(form.medicationStatus)}
+4. Scheduled Tasks / Procedures
+Task or procedure status: ${value(form.medicationStatus)}
 Reason: ${value(form.medicationReason)}
-Supervisor notified: ${value(form.medicationSupervisorNotified)}
+Manager / supervisor notified: ${value(form.medicationSupervisorNotified)}
 Follow-up required: ${value(form.medicationFollowUp)}
 
 5. Meals and Fluids
@@ -185,15 +185,15 @@ Incident type: ${value(form.incidentType)}
 Brief description: ${value(form.incidentDescription)}
 Immediate action taken: ${value(form.immediateAction)}
 Witnesses: ${value(form.witnesses)}
-Supervisor notified: ${value(form.supervisorNotified)}
-Family / guardian notified: ${value(form.guardianNotified)}
+Manager / supervisor notified: ${value(form.supervisorNotified)}
+Other required contact notified: ${value(form.guardianNotified)}
 Report filed: ${value(form.reportFiled)}
 Report number: ${value(form.reportNumber)}
 
-8. Client Concerns
-Client said: ${quote}
+8. Notes / Quote
+Exact words or key note: ${quote}
 
-9. Support Provided
+9. Work Completed / Support Provided
 ${list(form.supportProvided)}
 
 10. Mood and Engagement
@@ -222,7 +222,7 @@ Time completed: ${value(form.timeCompleted)}`;
 
 export function getShiftReportFlags(form: ShiftReportForm) {
   const incidentFlag = form.incidentOccurred === "Yes" || Boolean(form.incidentType);
-  const medicationIssueFlag = ["Refused", "Held"].includes(form.medicationStatus);
+  const medicationIssueFlag = ["Refused", "Held", "Refused / declined", "Held / delayed"].includes(form.medicationStatus);
   const behaviourIssueFlag = form.challengingBehaviours.length > 0;
   const lineOfSightIssueFlag =
     form.lineOfSightMaintained === "No" ||

@@ -37,9 +37,9 @@ ${optionPrompt}
 
 Important:
 - Do not invent missing information.
-- Use simple English suitable for support workers.
+- Use simple English suitable for workplace reports.
 - Keep names, dates, times, observations, notifications, and follow-up details factual.
-- If the information suggests missing participant, no line of sight, medication error, fall, injury, self-harm, aggression, neglect risk, or location unknown, include a short reminder to notify a supervisor and follow company procedure.
+- If the information suggests a missing person, unknown location, visibility concern, safety incident, injury, aggression, task/procedure error, policy breach, or other serious risk, include a short reminder to notify the appropriate manager or supervisor and follow workplace policies and legal obligations.
 
 Report details:
 ${sourceText}`;

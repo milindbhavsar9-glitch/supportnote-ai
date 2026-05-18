@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   title: "SupportNote AI",
   description:
-    "Create professional shift notes and incident reports in minutes with easy tick boxes and AI writing help."
+    "Create clear shift reports and incident notes in minutes with easy tick boxes and AI writing help."
 };
 
 export default function RootLayout({

@@ -14,10 +14,10 @@ SupportNote AI currently runs in demo mode. Use fake data only until Supabase Au
 ## RLS Review Notes
 
 - RLS is enabled on the planned tenant tables in `supabase/schema.sql`.
-- Solo/support worker access is scoped to `auth.uid()` for production.
+- Solo/worker access is scoped to `auth.uid()` for production.
 - Team leader/company admin access is scoped through company membership helper functions.
 - Current demo-mode server routes use the service role key and a browser demo session marker to keep testing possible before real login.
-- Before real participant data is entered, replace demo login with Supabase Auth and remove any client-visible demo session fallback used for PDF links.
+- Before real workplace or personal data is entered, replace demo login with Supabase Auth and remove any browser-visible demo session fallback used for PDF links.
 
 ## Deployment Checklist
 
@@ -29,10 +29,10 @@ SupportNote AI currently runs in demo mode. Use fake data only until Supabase Au
 - `STRIPE_WEBHOOK_SECRET` is added after creating the Stripe webhook endpoint.
 - Use HTTPS production URL: `https://supportnote-ai.vercel.app`.
 
-## Production Before Real Client Data
+## Production Before Real Workplace Data
 
 - Replace demo admin login with Supabase Auth.
 - Enforce user/company IDs on all report writes.
 - Remove fake-data/demo account helpers.
 - Review privacy policy and terms with an Australian legal professional.
-- Confirm NDIS/client record retention requirements with the business owner.
+- Confirm workplace record retention requirements with the business owner.

@@ -22,7 +22,7 @@ export function getRoleLabel(role?: string | null) {
     case "team_leader":
       return "Team Leader";
     case "support_worker":
-      return "Support Worker";
+      return "Worker";
     case "solo_user":
       return "Solo User";
     default:
