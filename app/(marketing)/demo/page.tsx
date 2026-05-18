@@ -22,7 +22,7 @@ export default function DemoPage() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/signup">Start Free Trial</Link>
+          <Link href="/signup">Create Account</Link>
         </Button>
       </div>
       <div className="mt-10 grid gap-5 md:grid-cols-4">

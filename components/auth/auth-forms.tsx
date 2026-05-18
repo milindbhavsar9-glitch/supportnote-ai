@@ -81,7 +81,7 @@ export function SignupForm() {
       setStatus({
         type: "error",
         message:
-          "You must agree to the Terms, Privacy Policy, AI Disclaimer, and Subscription Terms before creating an account."
+          "You must agree to the Terms of Service, Privacy Policy, and AI Disclaimer before creating an account."
       });
       return;
     }
@@ -164,16 +164,12 @@ export function SignupForm() {
             <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/privacy" target="_blank">
               Privacy Policy
             </Link>
-            ,{" "}
+            , and{" "}
             <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/ai-usage-disclaimer" target="_blank">
               AI Disclaimer
             </Link>
-            , and{" "}
-            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/pricing" target="_blank">
-              Subscription Terms
-            </Link>
-            . I understand this tool helps draft shift reports and incident notes, but I am responsible for checking the
-            accuracy of all information and following my workplace policies before using any report.
+            . I understand this tool is currently being tested and I am responsible for checking the accuracy of any
+            AI-generated report before using it.
           </span>
         </label>
         <p className="mt-3 text-xs leading-5 text-muted-foreground">

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSubscriptionStatusForSession } from "@/lib/billing/subscription";
+import { isBillingEnabled } from "@/lib/config/billing";
 import { getClientSessionId, missingSessionResponse } from "@/lib/reports/api";
 import { getStripe } from "@/lib/stripe/server";
 
@@ -19,6 +20,13 @@ export async function POST(request: Request) {
   if (!sessionId) return missingSessionResponse();
 
   try {
+    if (!isBillingEnabled()) {
+      return NextResponse.json(
+        { error: "Billing is disabled during private testing." },
+        { status: 403 }
+      );
+    }
+
     const status = await getSubscriptionStatusForSession(sessionId);
     if (!status.stripeCustomerId) {
       return NextResponse.json(

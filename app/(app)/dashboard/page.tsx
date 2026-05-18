@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AlertTriangle, ClipboardCheck, Clock, FileText, Search, WalletCards } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubscriptionStatusCard } from "@/components/billing/subscription-status-card";
+import { isBillingEnabled } from "@/lib/config/billing";
 
 const cards = [
   { title: "Create Shift Report", href: "/reports/shift/new", icon: ClipboardCheck },
@@ -19,6 +20,10 @@ const reports = [
 ];
 
 export default function DashboardPage() {
+  const dashboardCards = isBillingEnabled()
+    ? cards
+    : cards.filter((card) => card.href !== "/settings/billing");
+
   return (
     <div className="pb-20 lg:pb-0">
       <div className="mb-6">
@@ -27,7 +32,7 @@ export default function DashboardPage() {
       </div>
       <SubscriptionStatusCard />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {cards.map((card) => (
+        {dashboardCards.map((card) => (
           <Link key={card.title} href={card.href}>
             <Card className="h-full transition hover:border-primary">
               <CardContent className="p-5">

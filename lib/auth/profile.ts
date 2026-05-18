@@ -1,6 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 import { getSupabaseAdmin, getSupabaseServerClient } from "@/lib/supabase/server";
 import type { AppRole, AuthProfile } from "@/lib/auth/roles";
+import { isBillingEnabled } from "@/lib/config/billing";
 
 type BootstrapInput = {
   user: User;
@@ -53,6 +54,8 @@ export async function bootstrapUserProfile(input: BootstrapInput) {
   const role: AppRole = input.accountType === "team" ? "company_admin" : "solo_user";
   const email = input.user.email ?? "";
   const fullName = input.fullName.trim() || email;
+  const billingEnabled = isBillingEnabled();
+  const defaultPlan = billingEnabled ? "free_trial" : "small_team";
   const companyName =
     input.accountType === "team"
       ? input.companyName?.trim() || `${fullName}'s Support Team`
@@ -73,7 +76,7 @@ export async function bootstrapUserProfile(input: BootstrapInput) {
       business_name: input.accountType === "team" ? companyName : null,
       contact_email: email,
       billing_email: email,
-      plan: "free_trial"
+      plan: defaultPlan
     })
     .select("id")
     .single();
@@ -107,18 +110,20 @@ export async function bootstrapUserProfile(input: BootstrapInput) {
 
   if (memberError) throw new Error(memberError.message);
 
-  const trialStart = new Date();
-  const trialEnd = new Date(trialStart);
-  trialEnd.setDate(trialEnd.getDate() + 7);
-
   await supabase.from("subscriptions").insert({
     company_id: company.id,
     user_id: input.user.id,
-    plan: "free_trial",
-    status: "trialing",
-    trial_start: trialStart.toISOString(),
-    trial_end: trialEnd.toISOString()
+    plan: defaultPlan,
+    status: billingEnabled ? "trialing" : "full_access",
+    trial_start: billingEnabled ? new Date().toISOString() : null,
+    trial_end: billingEnabled ? getTrialEnd().toISOString() : null
   });
 
   return { id: input.user.id, company_id: company.id };
+}
+
+function getTrialEnd() {
+  const trialEnd = new Date();
+  trialEnd.setDate(trialEnd.getDate() + 7);
+  return trialEnd;
 }

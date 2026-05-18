@@ -13,15 +13,13 @@ export function MarketingHeader() {
         <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
           <Link href="/#features">Features</Link>
           <Link href="/#how-it-works">How it works</Link>
-          <Link href="/pricing">Pricing</Link>
-          <Link href="/demo">Demo</Link>
         </nav>
         <div className="flex items-center gap-2">
           <Button asChild variant="ghost" size="sm">
             <Link href="/login">Log in</Link>
           </Button>
           <Button asChild size="sm">
-            <Link href="/signup">Start Free Trial</Link>
+            <Link href="/signup">Create Account</Link>
           </Button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { WalletCards } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { INTERNAL_TESTING_MESSAGE, isBillingEnabled } from "@/lib/config/billing";
 import { getDemoSessionId } from "@/lib/reports/demo-session";
 
 type Status = {
@@ -22,6 +23,7 @@ type Status = {
 };
 
 export function SubscriptionStatusCard() {
+  const billingEnabled = isBillingEnabled();
   const [status, setStatus] = useState<Status | null>(null);
 
   useEffect(() => {
@@ -38,6 +40,23 @@ export function SubscriptionStatusCard() {
 
     void loadStatus();
   }, []);
+
+  if (!billingEnabled) {
+    return (
+      <Card className="mb-8 border-primary/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <WalletCards className="h-5 w-5 text-primary" />
+            Internal testing mode
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="font-semibold">Full access is enabled for company testing.</p>
+          <p className="mt-1 text-sm text-muted-foreground">{INTERNAL_TESTING_MESSAGE}</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mb-8 border-primary/20">

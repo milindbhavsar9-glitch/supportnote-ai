@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { INTERNAL_TESTING_MESSAGE } from "@/lib/config/billing";
 
 export function MarketingFooter() {
   return (
@@ -9,11 +10,14 @@ export function MarketingFooter() {
           <p className="mt-2 max-w-xl">
             Clear shift reports and incident notes for everyday workplace teams.
           </p>
+          <p className="mt-3 max-w-xl rounded-md bg-secondary px-3 py-2 text-xs text-foreground">
+            {INTERNAL_TESTING_MESSAGE}
+          </p>
         </div>
         <div className="space-y-2">
           <p className="font-semibold text-foreground">Product</p>
-          <Link href="/pricing" className="block">Pricing</Link>
-          <Link href="/demo" className="block">Demo</Link>
+          <Link href="/signup" className="block">Create Account</Link>
+          <Link href="/login" className="block">Login</Link>
           <Link href="/contact" className="block">Contact</Link>
         </div>
         <div className="space-y-2">

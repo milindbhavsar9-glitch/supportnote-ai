@@ -5,6 +5,7 @@ import { Brain, ClipboardCopy, Loader2, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AI_REVIEW_DISCLAIMER, aiWritingOptions, type AIWritingOptionId } from "@/lib/ai/options";
+import { isBillingEnabled } from "@/lib/config/billing";
 
 type AIWritingHelperProps = {
   reportType: "shift" | "incident";
@@ -26,6 +27,7 @@ export function AIWritingHelper({
   reportId,
   onApply
 }: AIWritingHelperProps) {
+  const billingEnabled = isBillingEnabled();
   const [selectedOption, setSelectedOption] = useState<AIWritingOptionId>(aiWritingOptions[0].id);
   const [output, setOutput] = useState("");
   const [message, setMessage] = useState("");
@@ -109,7 +111,7 @@ export function AIWritingHelper({
     setMessage("AI reviewed text added to the report. Save the draft to store it.");
   }
 
-  const usageLimitReached = usage.aiGenerationsUsed >= usage.aiGenerationsLimit;
+  const usageLimitReached = billingEnabled && usage.aiGenerationsUsed >= usage.aiGenerationsLimit;
 
   return (
     <Card className="border-primary/20">
@@ -143,7 +145,9 @@ export function AIWritingHelper({
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">
-            Demo AI usage: {usage.aiGenerationsUsed} / {usage.aiGenerationsLimit}
+            {billingEnabled
+              ? `AI usage: ${usage.aiGenerationsUsed} / ${usage.aiGenerationsLimit}`
+              : "AI access is enabled for internal testing."}
           </p>
           <Button
             type="button"
@@ -157,7 +161,7 @@ export function AIWritingHelper({
 
         {usageLimitReached ? (
           <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-950">
-            Free demo AI limit reached. Upgrade billing will be connected in the subscription phase.
+            AI generation limit reached.
           </p>
         ) : null}
 

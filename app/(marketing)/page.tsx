@@ -11,8 +11,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PricingCard } from "@/components/pricing/pricing-card";
-import { plans } from "@/lib/config/plans";
 
 const features = [
   { title: "Easy tick-box shift reports", icon: CheckSquare },
@@ -38,18 +36,12 @@ export default function HomePage() {
               Create clear shift reports and incident notes in minutes.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-              SupportNote AI helps workers write clear, factual, and professional
-              notes using easy tick-box forms and AI writing support.
+              SupportNote AI helps staff prepare clear, factual, and professional
+              notes using easy tick boxes and AI writing help.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
-                <Link href="/signup">Start Free Trial</Link>
-              </Button>
-              <Button asChild variant="secondary" size="lg">
-                <Link href="/demo">View Demo</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/pricing">See Pricing</Link>
+                <Link href="/signup">Get Started</Link>
               </Button>
             </div>
           </div>
@@ -145,17 +137,6 @@ export default function HomePage() {
               </CardContent>
             </Card>
           ))}
-        </div>
-      </section>
-
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold">Pricing</h2>
-          <div className="mt-8 grid gap-5 lg:grid-cols-3">
-            {plans.map((plan) => (
-              <PricingCard key={plan.id} plan={plan} />
-            ))}
-          </div>
         </div>
       </section>
 

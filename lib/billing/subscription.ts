@@ -1,5 +1,6 @@
 import type Stripe from "stripe";
 import { plans, type PlanId } from "@/lib/config/plans";
+import { isBillingEnabled } from "@/lib/config/billing";
 import { getStripe } from "@/lib/stripe/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
@@ -49,6 +50,29 @@ function defaultStatus(): SubscriptionStatus {
     currentPeriodEnd: null,
     cancelAtPeriodEnd: false,
     limits: plan.limits,
+    usage: {
+      shiftReportsUsed: 0,
+      incidentReportsUsed: 0,
+      aiGenerationsUsed: 0
+    }
+  };
+}
+
+function internalTestingStatus(): SubscriptionStatus {
+  return {
+    plan: "small_team",
+    planName: "Internal Testing Access",
+    status: "full_access",
+    stripeCustomerId: null,
+    stripeSubscriptionId: null,
+    currentPeriodEnd: null,
+    cancelAtPeriodEnd: false,
+    limits: {
+      users: 999,
+      shiftReports: null,
+      incidentReports: null,
+      aiGenerations: 999999
+    },
     usage: {
       shiftReportsUsed: 0,
       incidentReportsUsed: 0,
@@ -110,6 +134,12 @@ function planFromSubscription(subscription: Stripe.Subscription): PlanId {
 }
 
 export async function getSubscriptionStatusForSession(sessionId: string): Promise<SubscriptionStatus> {
+  if (!isBillingEnabled()) {
+    const status = internalTestingStatus();
+    status.usage = await getReportUsage(sessionId);
+    return status;
+  }
+
   const status = defaultStatus();
   status.usage = await getReportUsage(sessionId);
 
@@ -164,5 +194,6 @@ export function isLimitReached({
   used: number;
   limit: number | null;
 }) {
+  if (!isBillingEnabled()) return false;
   return typeof limit === "number" && used >= limit;
 }

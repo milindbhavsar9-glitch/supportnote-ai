@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { DemoLoginForm } from "@/components/auth/demo-login-form";
 import { LoginForm } from "@/components/auth/auth-forms";
 
 export default function LoginPage() {
@@ -9,12 +8,6 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold">Log in</h1>
         <p className="mt-2 text-sm text-muted-foreground">Access your SupportNote AI dashboard.</p>
         <LoginForm />
-        <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
-          <span className="h-px flex-1 bg-border" />
-          Demo only
-          <span className="h-px flex-1 bg-border" />
-        </div>
-        <DemoLoginForm />
         <div className="mt-4 flex justify-between text-sm">
           <Link href="/forgot-password" className="text-primary">Forgot password?</Link>
           <Link href="/signup" className="font-semibold text-primary">Create account</Link>

@@ -6,6 +6,7 @@ import {
   getAIWritingOption
 } from "@/lib/ai/options";
 import { getSubscriptionStatusForSession } from "@/lib/billing/subscription";
+import { isBillingEnabled } from "@/lib/config/billing";
 import { ok } from "@/lib/http";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
@@ -73,10 +74,10 @@ export async function POST(request: Request) {
     const usedBefore = subscription.usage.aiGenerationsUsed;
     const limit = subscription.limits.aiGenerations;
 
-    if (usedBefore >= limit) {
+    if (isBillingEnabled() && usedBefore >= limit) {
       return ok(
         {
-          error: `Your ${subscription.planName} AI generation limit has been reached. Upgrade your plan in Billing Settings.`,
+          error: `Your ${subscription.planName} AI generation limit has been reached.`,
           usage: {
             aiGenerationsUsed: usedBefore,
             aiGenerationsLimit: limit

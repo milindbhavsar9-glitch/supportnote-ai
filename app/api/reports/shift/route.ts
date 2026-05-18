@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   ) {
     return NextResponse.json(
       {
-        error: `Your ${subscription.planName} shift report limit has been reached. Upgrade your plan in Billing Settings.`
+        error: `Your ${subscription.planName} shift report limit has been reached.`
       },
       { status: 402 }
     );

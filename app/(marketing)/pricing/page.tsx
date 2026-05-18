@@ -1,7 +1,25 @@
 import { PricingCard } from "@/components/pricing/pricing-card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { isBillingEnabled, INTERNAL_TESTING_MESSAGE } from "@/lib/config/billing";
 import { plans } from "@/lib/config/plans";
 
 export default function PricingPage() {
+  if (!isBillingEnabled()) {
+    return (
+      <main className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Private testing mode</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-muted-foreground">
+            <p>{INTERNAL_TESTING_MESSAGE}</p>
+            <p>Pricing and payments are hidden while internal testing is active.</p>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
       <div className="max-w-3xl">

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CreditCard, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { INTERNAL_TESTING_MESSAGE, isBillingEnabled } from "@/lib/config/billing";
 import { plans, type PlanId } from "@/lib/config/plans";
 import { getDemoSessionId } from "@/lib/reports/demo-session";
 
@@ -32,6 +33,7 @@ function formatLimit(used: number, limit: number | null) {
 }
 
 export function SubscriptionManager() {
+  const billingEnabled = isBillingEnabled();
   const [sessionId, setSessionId] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
@@ -106,6 +108,23 @@ export function SubscriptionManager() {
     }
 
     window.location.assign(data.url);
+  }
+
+  if (!billingEnabled) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="h-5 w-5 text-primary" />
+            Billing disabled for testing
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-muted-foreground">
+          <p>{INTERNAL_TESTING_MESSAGE}</p>
+          <p>All signed-in users have full access while private testing mode is active.</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

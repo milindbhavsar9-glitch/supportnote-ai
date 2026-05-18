@@ -3,11 +3,12 @@ import { BarChart3, ClipboardCheck, FileText, Search, Settings, Users } from "lu
 import { UserBadge } from "@/components/auth/user-badge";
 import { getCurrentProfile } from "@/lib/auth/profile";
 import { canOpenAdmin } from "@/lib/auth/roles";
+import { isBillingEnabled, INTERNAL_TESTING_MESSAGE } from "@/lib/config/billing";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/reports/shift/new", label: "Shift Report", icon: ClipboardCheck },
-  { href: "/reports/incident/new", label: "Incident Report", icon: FileText },
+  { href: "/reports/incident/new", label: "Incident Note", icon: FileText },
   { href: "/reports", label: "Search Records", icon: Search },
   { href: "/admin", label: "Admin", icon: Users },
   { href: "/settings", label: "Settings", icon: Settings }
@@ -16,6 +17,7 @@ const nav = [
 export async function AppShell({ children }: { children: React.ReactNode }) {
   const profile = await getCurrentProfile();
   const visibleNav = nav.filter((item) => item.href !== "/admin" || canOpenAdmin(profile?.role));
+  const billingEnabled = isBillingEnabled();
 
   return (
     <div className="min-h-screen bg-muted/40">
@@ -45,12 +47,14 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
               <span>SupportNote AI</span>
             </Link>
             <p className="hidden text-sm text-muted-foreground lg:block">
-              Create factual support notes with simple forms and reviewable AI help.
+              {INTERNAL_TESTING_MESSAGE}
             </p>
             <div className="flex items-center gap-3">
-              <Link href="/settings/billing" className="text-sm font-semibold text-primary">
-                Subscription
-              </Link>
+              {billingEnabled ? (
+                <Link href="/settings/billing" className="text-sm font-semibold text-primary">
+                  Subscription
+                </Link>
+              ) : null}
               <UserBadge profile={profile} />
             </div>
           </div>

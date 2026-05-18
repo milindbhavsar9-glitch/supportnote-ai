@@ -32,9 +32,9 @@ export default function PrivacyPage() {
           API keys are kept server-side.
         </p>
         <p>
-          Billing information is handled through Stripe. SupportNote AI stores
-          subscription status and billing event references, while card/payment details
-          are handled by Stripe.
+          Billing is disabled during private company testing. If billing is enabled
+          later, payment details may be handled by Stripe while SupportNote AI stores
+          subscription status and billing event references.
         </p>
         <p>
           Users can request account deletion or data export through account settings
