@@ -81,7 +81,7 @@ export function SignupForm() {
       setStatus({
         type: "error",
         message:
-          "You must agree to the Terms, Privacy Policy, Data Handling Notice, and AI Disclaimer before creating an account."
+          "You must agree to the Terms, Privacy Policy, AI Disclaimer, and Subscription Terms before creating an account."
       });
       return;
     }
@@ -165,17 +165,15 @@ export function SignupForm() {
               Privacy Policy
             </Link>
             ,{" "}
-            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/data-handling-notice" target="_blank">
-              Data Handling Notice
+            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/ai-usage-disclaimer" target="_blank">
+              AI Disclaimer
             </Link>
             , and{" "}
-            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/ai-usage-disclaimer" target="_blank">
-              AI Usage Disclaimer
+            <Link className="font-semibold text-primary underline-offset-4 hover:underline" href="/pricing" target="_blank">
+              Subscription Terms
             </Link>
-            . I understand that SupportNote AI helps prepare documentation but does not replace my workplace policies,
-            manager review, professional judgement, or legal obligations. Users are responsible for following their workplace
-            policies and legal obligations. I am responsible for reviewing all AI-generated
-            text before saving, copying, exporting, or submitting any report.
+            . I understand this tool helps draft shift reports and incident notes, but I am responsible for checking the
+            accuracy of all information and following my workplace policies before using any report.
           </span>
         </label>
         <p className="mt-3 text-xs leading-5 text-muted-foreground">
